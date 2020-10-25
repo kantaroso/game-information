@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go
+  strategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0%
+  template:
+    metadata:
+      labels:
+        app: go
+    spec:
+      containers:
+      - name: go
+        image: kantaroso/game-information-go-prod
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 8090
+        command: ["./main"]
+        env:
+          - name: DB_HOST
+            value: "10.100.23.221"
+        volumeMounts:
+          - name: claim-volume
+            mountPath: /data
+      volumes:
+      - name: claim-volume
+        persistentVolumeClaim:
+          claimName: pvc-go
