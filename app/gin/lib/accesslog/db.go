@@ -10,7 +10,7 @@ import (
 // CountAll アクセスログ数取得
 func countAll() int {
 
-	config := config.GetDatabase()
+	config := config.GetAnalysis()
 	connection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {
@@ -41,7 +41,7 @@ func countAll() int {
 
 func insert(method string, endpoint string, queryString string, userAgent string) {
 
-	config := config.GetDatabase()
+	config := config.GetAnalysis()
 	connection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {

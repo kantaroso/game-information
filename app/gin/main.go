@@ -18,7 +18,7 @@ func main() {
 	router := gin.Default()
 	// API
 	router.GET("/pv", func(c *gin.Context) { controllers.Pv(c) })
-	router.GET("/maker/list", func(c *gin.Context) { controllers.Pv(c) })
+	router.GET("/maker/list", func(c *gin.Context) { controllers.GetMakerInfo(c) })
 
 	router.Run(":8090")
 }

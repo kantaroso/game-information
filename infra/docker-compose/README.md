@@ -2,18 +2,18 @@
 ## 起動手順
 ```shell
 # docker 起動
-cd infra/docker-compose/vue_gin
+cd infra/docker-compose/
 docker-compose up -d
 
 # vue起動
 # docker にログイン
-docker exec -it vue_gin_vue_1 /bin/sh
+docker exec -it front /bin/sh
 
 cd /var/www/front
 npm run serve
 
 # go 起動
-docker exec -it vue_gin_go_1 /bin/sh
+docker exec -it api /bin/sh
 cd src/game-information/
 go run main.go
 ```
