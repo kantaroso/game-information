@@ -2,20 +2,16 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kantaroso/game-information/lib/accesslog"
+	"github.com/kantaroso/game-information/lib/youtube"
 )
 
-// Pv トップページの処理
-func Pv(c *gin.Context) {
-	accesslog.Register(c.Request)
-	accessCount := accesslog.GetAccessCount()
+// GetMakerInfo トップページの処理
+func GetMakerInfo(c *gin.Context) {
+	//path = c.Param("path")
+	//パスからid取得予定
+	id := 1
+	movies := youtube.GetMovieList(id)
 	outjson(c, 200, gin.H{
-		"pv": accessCount,
+		"movies": movies,
 	})
-}
-
-// outjson json出力
-func outjson(c *gin.Context, code int, obj interface{}) {
-	c.Header("access-control-allow-origin", "*")
-	c.JSON(code, obj)
 }

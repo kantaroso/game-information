@@ -1,7 +1,7 @@
 <template>
   <div class="index">
     <FrontHeader />
-    <PageTitle title="トップページ"/>
+    <PageTitle title="ページが存在しません"/>
     <FrontFooter />
   </div>
 </template>

@@ -33,7 +33,7 @@ import axios from 'axios'
 export default class Header extends Vue {
   pv = '-'
   mounted () {
-    axios.get('http://localhost/api/pv').then(
+    axios.get('http://localhost/pv').then(
       res => {
         this.pv = String(res.data.pv)
       }

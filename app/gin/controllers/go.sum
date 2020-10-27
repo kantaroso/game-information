@@ -17,6 +17,7 @@ github.com/google/gofuzz v1.0.0/go.mod h1:dBl0BpW6vV/+mYPU4Po3pmUjxk6FQPldtuIdl/
 github.com/json-iterator/go v1.1.9/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/kantaroso/game-information v0.0.0-20200224070821-bd5b0e685514 h1:tY+7zLadJ2kf6YS+pSAdx1Kyws0jrwEzAvhQSUg0Fq8=
 github.com/kantaroso/game-information v0.0.0-20200411161947-fa515616345e h1:uKKftX31gXuX+hSJxmxc0Jp3l4vzXJ6DOxqBf4Rdenk=
+github.com/kantaroso/game-information v0.0.0-20201025083207-40bf5f8c17bd h1:kPgDnY5ZbcGtsa9xRzJPvqBLG+c+y08fKkFlTbfZ6bM=
 github.com/leodido/go-urn v1.2.0 h1:hpXL4XnriNwQ/ABnpepYM/1vCLWNDfUNts8dX3xTG6Y=
 github.com/leodido/go-urn v1.2.0/go.mod h1:+8+nEpDfqqsY+g338gtMEUOtuK+4dEMhiQEgxpxOKII=
 github.com/mattn/go-isatty v0.0.12 h1:wuysRhFDzyxgEmMf5xjvJ2M9dZoWAXNNr5LSBS7uHXY=

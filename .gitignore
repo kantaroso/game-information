@@ -1,3 +1,4 @@
 /infra/data/mysql
 /app/gin/main
 /game-information.code-workspace
+/infra/docker-compose/app.env
