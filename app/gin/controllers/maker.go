@@ -7,7 +7,10 @@ import (
 
 // GetMakerInfo トップページの処理
 func GetMakerInfo(c *gin.Context) {
-	movies := youtube.GetMovieList()
+	//path = c.Param("path")
+	//パスからid取得予定
+	id := 1
+	movies := youtube.GetMovieList(id)
 	outjson(c, 200, gin.H{
 		"movies": movies,
 	})

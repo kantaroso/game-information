@@ -34,7 +34,7 @@ func getService() *youtube.Service {
 }
 
 // GetMovieList youtubeからデータ取得
-func GetMovieList() *[]Movie {
+func GetMovieList(id int) *[]Movie {
 
 	service := getService()
 	// test

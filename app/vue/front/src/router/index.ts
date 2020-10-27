@@ -7,7 +7,17 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Index',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Index.vue')
+    component: () => import('../views/Index.vue')
+  },
+  {
+    path: '/maker/:path',
+    name: 'Maker',
+    component: () => import('../views/Maker.vue')
+  },
+  {
+    path: '*',
+    name: 'NotFound',
+    component: () => import('../views/NotFound.vue')
   }
 ]
 
