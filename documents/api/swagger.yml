@@ -1,0 +1,145 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "1.0.0"
+  title: "game-infomation"
+
+tags:
+- name: "common"
+  description: "common api"
+- name: "maker"
+  description: "maker info"
+schemes:
+- "https"
+- "http"
+paths:
+  /common/pv:
+    get:
+      tags:
+      - "common"
+      summary: "サイト全体pv数取得"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: object
+            properties:
+              pv:
+                type: "integer"
+                format: "int64"
+                example: 12
+  /maker/list:
+    get:
+      tags:
+      - "maker"
+      summary: "メーカー一覧取得"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "成功時のレスポンス.データがない時は[]."
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                code:
+                  type: "string"
+                  format: "string"
+                  example: "august"
+                name:
+                  type: "string"
+                  format: "string"
+                  example: "オーガスト"
+  /maker/detail/{path}:
+    get:
+      tags:
+      - "maker"
+      summary: "メーカー詳細取得"
+      description: ""
+      parameters:
+      - name: "path"
+        in: "path"
+        description: "makerのcode"
+        required: true
+        type: "string"
+        format: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "成功時のレスポンス"
+          schema:
+            type: object
+            properties:
+              code:
+                type: "string"
+                format: "string"
+                example: "august"
+              name:
+                type: "string"
+                format: "string"
+                example: "オーガスト"
+              ohp:
+                type: "string"
+                format: "string"
+                example: "https://august-soft.com"
+              twitter_name:
+                type: "string"
+                format: "string"
+                example: "august_soft"
+  /maker/videos/{path}:
+    get:
+      tags:
+      - "maker"
+      summary: "メーカー動画取得"
+      description: ""
+      parameters:
+      - name: "path"
+        in: "path"
+        description: "makerのcode"
+        required: true
+        type: "string"
+        format: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: "成功時のレスポンス"
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                ID:
+                  type: "string"
+                  format: "string"
+                  example: "amKKIFU-XQg"
+                ChannelID:
+                  type: "string"
+                  format: "string"
+                  example: "UCVj6bacaTQ6r6Dsv0frD_sA"
+                Description:
+                  type: "string"
+                  format: "string"
+                  example: "2020年9月に15周年を迎える『夜明け前より瑠璃色な』より、 シリーズ3作および各サントラがまとめて楽しめる 『夜明け前より瑠璃色な コンプリートパック』を発売いたします。"
+                PublishedAt:
+                  type: "string"
+                  format: "string"
+                  example: "2020-07-17T15:00:01Z"
+                Title:
+                  type: "string"
+                  format: "string"
+                  example: "夜明け前より瑠璃色な コンプリートパック PV"

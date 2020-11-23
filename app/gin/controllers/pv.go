@@ -1,8 +1,9 @@
 package controllers
 
 import (
+	"local.packages/game-information/lib/domain/accesslog"
+
 	"github.com/gin-gonic/gin"
-	"github.com/kantaroso/game-information/lib/accesslog"
 )
 
 // Pv トップページの処理
