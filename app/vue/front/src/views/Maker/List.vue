@@ -2,14 +2,19 @@
   <div class="index">
     <FrontHeader />
     <PageTitle title="メーカー一覧"/>
-    <h2>メーカー一覧</h2>
-    <!--
-    <b-list-group v-if="items">
-      <b-list-group-item v-for="item in items.videos" :key="item.ID">
-      </b-list-group-item>
-    </b-list-group>
-    <h2 v-else><b-spinner label="Loading..."></b-spinner></h2>
-    -->
+    <div v-if="nolist.length">
+      <h2>データなし</h2>
+    </div>
+    <div v-else-if="items">
+      <b-list-group v-for="item in items" :key="item.code">
+        <b-list-group-item>
+          <b-link :href="`/maker/detail/${item.code}`">{{item.name}}</b-link>
+        </b-list-group-item>
+      </b-list-group>
+    </div>
+    <div v-else>
+      <h2><b-spinner label="Loading..."></b-spinner></h2>
+    </div>
     <FrontFooter />
   </div>
 </template>
@@ -29,10 +34,15 @@ import axios from 'axios'
 })
 export default class Index extends Vue {
   items = null
+  nolist = false
   mounted () {
-    axios.get('http://localhost/maker/august').then(
+    axios.get('http://localhost/maker/list').then(
       res => {
-        this.items = res.data
+        if (!res.data.length) {
+          this.nolist = true
+        } else {
+          this.items = res.data
+        }
       }
     ).catch(
       error => console.log(error)

@@ -15,7 +15,7 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/Maker/List.vue')
   },
   {
-    path: '/maker/:path',
+    path: '/maker/detail/:path',
     name: 'MakerDetail',
     component: () => import('../views/Maker/Detail.vue')
   },

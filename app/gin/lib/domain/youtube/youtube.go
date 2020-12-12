@@ -49,6 +49,9 @@ func GetVideos(channelID string, query string) *[]Video {
 	videos := []Video{}
 	for _, item := range response.Items {
 		publishedAt, _ := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
+		if item.Id.VideoId == "" {
+			continue
+		}
 		videos = append(videos, Video{item.Id.VideoId, item.Snippet.ChannelId, item.Snippet.Description, publishedAt, item.Snippet.Title})
 	}
 	return &videos
