@@ -4,14 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/kantaroso/game-information/config"
+	dbConfig "local.packages/game-information/config/database"
 )
 
-// CountAll アクセスログ数取得
-func countAll() int {
+// CountAll query [ select count(id) from access_log ]
+func CountAll() int {
 
-	config := config.GetAnalysis()
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Password, config.Host, config.Port, config.Name)
+	config := dbConfig.GetAnalysis()
+	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {
 		panic(err)
@@ -39,10 +39,11 @@ func countAll() int {
 	return count
 }
 
-func insert(method string, endpoint string, queryString string, userAgent string) {
+// Insert query [ insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?) ]
+func Insert(method string, endpoint string, queryString string, userAgent string) {
 
-	config := config.GetAnalysis()
-	connection := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", config.User, config.Password, config.Host, config.Port, config.Name)
+	config := dbConfig.GetAnalysis()
+	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {
 		panic(err)

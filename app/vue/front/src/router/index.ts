@@ -10,9 +10,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/Index.vue')
   },
   {
-    path: '/maker/:path',
-    name: 'Maker',
-    component: () => import('../views/Maker.vue')
+    path: '/maker/list',
+    name: 'MakerList',
+    component: () => import('../views/Maker/List.vue')
+  },
+  {
+    path: '/maker/detail/:path',
+    name: 'MakerDetail',
+    component: () => import('../views/Maker/Detail.vue')
   },
   {
     path: '*',

@@ -1,4 +1,4 @@
-package config
+package database
 
 import (
 	"os"
@@ -12,6 +12,9 @@ import (
 //   ・そこそこの機能が載っているらしい
 // 参考
 // https://rabbitfoot141.hatenablog.com/entry/2019/03/05/000551
+
+// ConnectionOption sql.Open option
+const ConnectionOption string = "%s:%s@tcp(%s:%d)/%s?parseTime=true"
 
 // Database db接続情報
 type Database struct {

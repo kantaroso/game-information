@@ -10,8 +10,8 @@ import (
 	"google.golang.org/api/youtube/v3"
 )
 
-// Movie 動画情報
-type Movie struct {
+// Video 動画情報
+type Video struct {
 	ID          string
 	ChannelID   string
 	Description string
@@ -22,7 +22,6 @@ type Movie struct {
 // getService serviceの生成
 func getService() *youtube.Service {
 	developerKey := os.Getenv("YOUTUBE_API_KEY")
-	log.Print(developerKey)
 	client := &http.Client{
 		Transport: &transport.APIKey{Key: developerKey},
 	}
@@ -33,14 +32,11 @@ func getService() *youtube.Service {
 	return service
 }
 
-// GetMovieList youtubeからデータ取得
-func GetMovieList(id int) *[]Movie {
-
+// GetVideos youtubeからデータ取得
+func GetVideos(channelID string, query string) *[]Video {
 	service := getService()
 	// test
-	channelID := "UCVj6bacaTQ6r6Dsv0frD_sA"
 	order := "date"
-	query := "PV OR ティザームービー"
 	var maxResult int64 = 50
 
 	part := []string{"id", "snippet"}
@@ -50,10 +46,13 @@ func GetMovieList(id int) *[]Movie {
 	if err != nil {
 		log.Fatalf("Error making API call to search: %v", err.Error())
 	}
-	movies := []Movie{}
+	videos := []Video{}
 	for _, item := range response.Items {
 		publishedAt, _ := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
-		movies = append(movies, Movie{item.Id.VideoId, item.Snippet.ChannelId, item.Snippet.Description, publishedAt, item.Snippet.Title})
+		if item.Id.VideoId == "" {
+			continue
+		}
+		videos = append(videos, Video{item.Id.VideoId, item.Snippet.ChannelId, item.Snippet.Description, publishedAt, item.Snippet.Title})
 	}
-	return &movies
+	return &videos
 }

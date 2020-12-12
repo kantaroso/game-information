@@ -1,14 +1,3 @@
-## 仕様
-
-### トップページ
-* アクセスカウンター
-  * PV
-* メニュー
-
-### メーカー詳細ページ
-* 動画一覧
-
-
 ## ディレクトリ構成
 
 ## goのモジュール関連の使い方
@@ -42,13 +31,7 @@ go run main.go
 
 ## ローカル構築手順
 
-### go
-
-* [docker-compose](infra/docker-compose/gin/README.md)
-
-### vue
-
-* [docker-compose](infra/docker-compose/vue_gin/README.md)
+* [こちら](infra/docker-compose/README.md)
 
 
 ## クエリ

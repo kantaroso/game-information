@@ -15,7 +15,7 @@
 
                 <b-collapse id="navbar-toggle-collapse" is-nav>
                 <b-navbar-nav class="ml-auto">
-                    <b-nav-item href="#">メニュー1</b-nav-item>
+                    <b-nav-item href="/maker/list">メーカー一覧</b-nav-item>
                     <b-nav-item href="#">メニュー2</b-nav-item>
                     <b-nav-item href="#">メニュー3</b-nav-item>
                 </b-navbar-nav>
@@ -33,7 +33,7 @@ import axios from 'axios'
 export default class Header extends Vue {
   pv = '-'
   mounted () {
-    axios.get('http://localhost/pv').then(
+    axios.get('http://localhost/common/pv').then(
       res => {
         this.pv = String(res.data.pv)
       }
