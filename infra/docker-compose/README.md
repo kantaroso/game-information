@@ -16,6 +16,9 @@ npm run serve
 docker exec -it api /bin/sh
 cd src/game-information/
 go run main.go
+
+# admin api
+wget http://localhost/admin/create/mkaer/video/3rdeye -O -
 ```
 
 ## 初回構築手順

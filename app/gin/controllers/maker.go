@@ -2,7 +2,6 @@ package controllers
 
 import (
 	domainMaker "local.packages/game-information/lib/domain/maker"
-	domainYoutube "local.packages/game-information/lib/domain/youtube"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,6 +52,15 @@ func GetMakerVideos(c *gin.Context) {
 		outNotFound(c)
 		return
 	}
-	videos := domainYoutube.GetVideos(detail.YoutubeChannelID, detail.YoutubeKeywords)
-	outjson(c, 200, videos)
+	videos := domainMaker.GetVideoList(maker.ID)
+	if len(*videos) == 0 {
+		outNotFound(c)
+		return
+	}
+
+	var response []map[string]string
+	for _, item := range *videos {
+		response = append(response, map[string]string{"ID": item.VideoID})
+	}
+	outjson(c, 200, response)
 }

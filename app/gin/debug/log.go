@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// LogStruct "github.com/kantaroso/game-information/debug"
+// LogStruct "local.packages/game-information/debug"
 func LogStruct(v interface{}) {
 	jsonBytes, err := json.Marshal(v)
 	if err != nil {

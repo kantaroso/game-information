@@ -16,3 +16,10 @@ func outNotFound(c *gin.Context) {
 func outError(c *gin.Context) {
 	outjson(c, 500, gin.H{})
 }
+
+func checkAdmin(c *gin.Context) bool {
+	if c.ClientIP() == "127.0.0.1" {
+		return true
+	}
+	return false
+}
