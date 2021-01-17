@@ -23,5 +23,9 @@ func main() {
 	router.GET("/maker/detail/:path", func(c *gin.Context) { controllers.GetMakerInfo(c) })
 	router.GET("/maker/videos/:path", func(c *gin.Context) { controllers.GetMakerVideos(c) })
 
+	// admin
+	router.GET("/admin/create/mkaer/video", func(c *gin.Context) { controllers.CreateMakerVideoAll(c) })
+	router.GET("/admin/create/mkaer/video/:path", func(c *gin.Context) { controllers.CreateMakerVideo(c) })
+
 	router.Run(":8090")
 }

@@ -6,9 +6,11 @@ info:
 
 tags:
 - name: "common"
-  description: "common api"
+  description: "共通API"
 - name: "maker"
-  description: "maker info"
+  description: "メーカー情報API"
+- name: "admin"
+  description: "管理用API（ローカルからのみ実行できる）"
 schemes:
 - "https"
 - "http"
@@ -143,3 +145,40 @@ paths:
                   type: "string"
                   format: "string"
                   example: "夜明け前より瑠璃色な コンプリートパック PV"
+  /admin/video:
+    get:
+      tags:
+      - "admin"
+      summary: "動画情報更新API"
+      description: ""
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: object
+  /admin/video/{path}:
+    get:
+      tags:
+      - "admin"
+      summary: "動画情報更新API(単体更新)"
+      description: ""
+      parameters:
+      - name: "path"
+        in: "path"
+        description: "makerのcode"
+        required: true
+        type: "string"
+        format: "string"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        "200":
+          description: ""
+          schema:
+            type: object

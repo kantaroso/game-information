@@ -30,7 +30,7 @@
           </div>
         </b-col>
         <b-col cols="4">
-          <a v-if="info.twitter_name" class="twitter-timeline" data-lang="ja" data-theme="dark" :href="`https://twitter.com/${info.twitter_name}`">Tweets by {{info.twitter_name}}</a>
+          <a v-if="info && info.twitter_name" class="twitter-timeline" data-lang="ja" data-theme="dark" :href="`https://twitter.com/${info.twitter_name}`">Tweets by {{info.twitter_name}}</a>
           <div v-else>
             <h3><b-spinner label="Loading..."></b-spinner></h3>
           </div>

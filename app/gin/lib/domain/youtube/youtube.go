@@ -33,25 +33,37 @@ func getService() *youtube.Service {
 }
 
 // GetVideos youtubeからデータ取得
-func GetVideos(channelID string, query string) *[]Video {
+func GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
 	service := getService()
 	// test
 	order := "date"
 	var maxResult int64 = 50
+	targettype := "video"
+
+	if publishedAfter == "" {
+		// 最古まで指定したいのでyoutubeのサービス開始日を利用
+		tmpPublishedAfter, _ := time.Parse("2006/01/02", "2005/12/15")
+		publishedAfter = tmpPublishedAfter.Format(time.RFC3339)
+	}
 
 	part := []string{"id", "snippet"}
-	call := service.Search.List(part).ChannelId(channelID).Order(order).Q(query).MaxResults(maxResult)
+	call := service.Search.List(part).ChannelId(channelID).Type(targettype).Order(order).Q(query).MaxResults(maxResult).PublishedAfter(publishedAfter)
+	if token != "" {
+		call = service.Search.List(part).ChannelId(channelID).Type(targettype).Order(order).Q(query).MaxResults(maxResult).PublishedAfter(publishedAfter).PageToken(token)
+	}
 
 	response, err := call.Do()
 	if err != nil {
 		log.Fatalf("Error making API call to search: %v", err.Error())
 	}
 	videos := []Video{}
+
+	if response.NextPageToken != "" {
+		videos = *GetVideos(channelID, query, publishedAfter, response.NextPageToken)
+	}
+
 	for _, item := range response.Items {
 		publishedAt, _ := time.Parse("2006-01-02T15:04:05Z", item.Snippet.PublishedAt)
-		if item.Id.VideoId == "" {
-			continue
-		}
 		videos = append(videos, Video{item.Id.VideoId, item.Snippet.ChannelId, item.Snippet.Description, publishedAt, item.Snippet.Title})
 	}
 	return &videos
