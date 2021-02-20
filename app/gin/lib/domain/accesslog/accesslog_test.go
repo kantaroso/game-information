@@ -21,21 +21,22 @@ func TestGetAccessCount(t *testing.T) {
 	domainAccesslogInstance := getMockDomain(db)
 
 	var result int
+	var rows *sqlmock.Rows
 
 	// 1件以上取れる場合
-	rows := sqlmock.NewRows([]string{"count(id)"}).AddRow(12345)
+	rows = sqlmock.NewRows([]string{"count(id)"}).AddRow(12345)
 	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnRows(rows)
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 12345, result)
 
 	// 0件の場合
-	rowsEmpty := sqlmock.NewRows([]string{"count(id)"}).AddRow(0)
-	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnRows(rowsEmpty)
+	rows = sqlmock.NewRows([]string{"count(id)"}).AddRow(0)
+	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnRows(rows)
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 0, result)
 
 	// エラーになった時
-	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnError(fmt.Errorf("some error"))
+	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnError(fmt.Errorf("some error case"))
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 0, result)
 
@@ -60,7 +61,7 @@ func TestRegister(t *testing.T) {
 	assert.Equal(t, true, result)
 
 	// エラー時（特になもしない）
-	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error"))
+	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error case"))
 	result = domainAccesslogInstance.Register(r)
 	assert.Equal(t, false, result)
 

@@ -38,7 +38,7 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.29.1 // indirect
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	local.packages/game-information/config/database v0.0.0-00010101000000-000000000000 // indirect
-	local.packages/game-information/controllers v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/controllers v0.0.0-00010101000000-000000000000
 	local.packages/game-information/debug v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/db/analysis v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/db/analysis/accesslog v0.0.0-00010101000000-000000000000 // indirect

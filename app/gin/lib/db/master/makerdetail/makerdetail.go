@@ -10,9 +10,6 @@ import (
 	log "local.packages/game-information/lib/domain/log"
 )
 
-// Columns テストで利用する
-const Columns = []string{"maker_id", "ohp", "twitter_name", "youtube_channel_id", "youtube_keywords", "created_at", "updated_at"}
-
 // Schema table schema [ maker_detail ]
 type Schema struct {
 	MakerID          int64
