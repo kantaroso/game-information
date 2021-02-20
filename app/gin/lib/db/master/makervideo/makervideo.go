@@ -33,7 +33,7 @@ func GetInstance() *MakerVideo {
 }
 
 // GetList query [ select * from maker_video where maker_id = ? order by id DESC ]
-func (db MakerVideo) GetList(makerID int64) *[]Schema {
+func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
 	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
 	if err != nil {
@@ -64,7 +64,7 @@ func (db MakerVideo) GetList(makerID int64) *[]Schema {
 }
 
 // BulkInsert [ insert int maker_video(maker_id, video_id, title, published_at) value ....]
-func (db MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
+func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
 
 	_, err := db.DBInstance.Query(db.createBulkInsertQuery(makerID, videos))
 	if err != nil {
@@ -74,7 +74,7 @@ func (db MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bo
 	return true
 }
 
-func (db MakerVideo) createBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
+func (db *MakerVideo) createBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
 	baseSQLStr := "insert into maker_video (maker_id, video_id, title, published_at, created_at) values %s"
 	valueSQLStr := "(%d, '%s', '%s', '%s', '%s')"
 	var valueSQLArray []string

@@ -29,7 +29,7 @@ func GetInstance() *Maker {
 }
 
 // Get query [ select * from maker where code = ? ]
-func (db Maker) Get(code string) *Schema {
+func (db *Maker) Get(code string) *Schema {
 
 	maker := &Schema{}
 
@@ -58,7 +58,7 @@ func (db Maker) Get(code string) *Schema {
 }
 
 // GetList query [ select * from maker order by name ]
-func (db Maker) GetList() *[]Schema {
+func (db *Maker) GetList() *[]Schema {
 
 	rows, err := db.DBInstance.Query("select * from maker order by name")
 	if err != nil {

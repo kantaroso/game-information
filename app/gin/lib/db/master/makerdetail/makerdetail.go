@@ -33,7 +33,7 @@ func GetInstance() *MakerDetail {
 }
 
 // GetList query [ select * from maker_detail where maker_id = ? ]
-func (db MakerDetail) GetList(makerIDs []int64) *[]Schema {
+func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 
 	var strMakerIDs []string
 	for _, v := range makerIDs {

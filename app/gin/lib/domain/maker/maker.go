@@ -15,6 +15,7 @@ type Maker struct {
 	DBMaker       *dbMaker.Maker
 	DBMakerdetail *dbMakerdetail.MakerDetail
 	DBMakervideo  *dbMakervideo.MakerVideo
+	DomainYoutube *domainYoutube.Youtube
 }
 
 // GetInstance インスタンス生成
@@ -23,17 +24,17 @@ func GetInstance() *Maker {
 }
 
 // GetMaker メーカー情報取得
-func (domain Maker) GetMaker(code string) *dbMaker.Schema {
+func (domain *Maker) GetMaker(code string) *dbMaker.Schema {
 	return domain.DBMaker.Get(code)
 }
 
 // GetMakerList メーカー情報一覧取得
-func (domain Maker) GetMakerList() *[]dbMaker.Schema {
+func (domain *Maker) GetMakerList() *[]dbMaker.Schema {
 	return domain.DBMaker.GetList()
 }
 
 // GetDetail メーカー情報詳細取得
-func (domain Maker) GetDetail(makerID int64) *dbMakerdetail.Schema {
+func (domain *Maker) GetDetail(makerID int64) *dbMakerdetail.Schema {
 	mkaerIDs := []int64{makerID}
 	details := domain.GetDetailList(mkaerIDs)
 	if len(*details) == 0 {
@@ -43,17 +44,17 @@ func (domain Maker) GetDetail(makerID int64) *dbMakerdetail.Schema {
 }
 
 // GetDetailList メーカー情報詳細一覧取得
-func (domain Maker) GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
+func (domain *Maker) GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
 	return domain.DBMakerdetail.GetList(mkaerIDs)
 }
 
 // GetVideoList メーカー動画情報取得
-func (domain Maker) GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
+func (domain *Maker) GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
 	return domain.DBMakervideo.GetList(mkaerID)
 }
 
 // UpdateVideoList 動画情報の更新
-func (domain Maker) UpdateVideoList(makerID int64) bool {
+func (domain *Maker) UpdateVideoList(makerID int64) bool {
 
 	detail := domain.GetDetail(makerID)
 	if detail.YoutubeChannelID == "" {
@@ -69,7 +70,7 @@ func (domain Maker) UpdateVideoList(makerID int64) bool {
 		latestat = (*makervideos)[0].PublishedAt.Add(1 * time.Second).Format(time.RFC3339)
 	}
 
-	videos := domainYoutube.GetVideos(detail.YoutubeChannelID, detail.YoutubeKeywords, latestat, "")
+	videos := domain.DomainYoutube.GetVideos(detail.YoutubeChannelID, detail.YoutubeKeywords, latestat, "")
 	if len(*videos) == 0 {
 		return true
 	}

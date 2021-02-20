@@ -17,11 +17,11 @@ func GetInstance() *Accesslog {
 }
 
 // GetAccessCount アクセスカウンター
-func (domain Accesslog) GetAccessCount() int {
+func (domain *Accesslog) GetAccessCount() int {
 	return domain.DBAccesslog.CountAll()
 }
 
 // Register アクセスログ記録
-func (domain Accesslog) Register(r *http.Request) bool {
+func (domain *Accesslog) Register(r *http.Request) bool {
 	return domain.DBAccesslog.Insert(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent"))
 }

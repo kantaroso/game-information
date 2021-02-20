@@ -20,6 +20,9 @@ type Video struct {
 	Title       string
 }
 
+// Youtube インスタンス
+type Youtube struct{}
+
 // getService serviceの生成
 func getService() *youtube.Service {
 	developerKey := os.Getenv("YOUTUBE_API_KEY")
@@ -35,7 +38,7 @@ func getService() *youtube.Service {
 }
 
 // GetVideos youtubeからデータ取得
-func GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
+func (domain *Youtube) GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
 	service := getService()
 	// test
 	order := "date"
@@ -62,7 +65,7 @@ func GetVideos(channelID string, query string, publishedAfter string, token stri
 	videos := []Video{}
 
 	if response.NextPageToken != "" {
-		videos = *GetVideos(channelID, query, publishedAfter, response.NextPageToken)
+		videos = *domain.GetVideos(channelID, query, publishedAfter, response.NextPageToken)
 	}
 
 	for _, item := range response.Items {
