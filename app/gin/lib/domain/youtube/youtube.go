@@ -1,13 +1,14 @@
 package youtube
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"google.golang.org/api/googleapi/transport"
 	"google.golang.org/api/youtube/v3"
+	log "local.packages/game-information/lib/domain/log"
 )
 
 // Video 動画情報
@@ -27,7 +28,8 @@ func getService() *youtube.Service {
 	}
 	service, err := youtube.New(client)
 	if err != nil {
-		log.Fatalf("Error creating new YouTube client: %v", err)
+		log.Error(fmt.Sprintf("Error creating new YouTube client: %v", err))
+		return nil
 	}
 	return service
 }
@@ -54,7 +56,8 @@ func GetVideos(channelID string, query string, publishedAfter string, token stri
 
 	response, err := call.Do()
 	if err != nil {
-		log.Fatalf("Error making API call to search: %v", err.Error())
+		log.Error(fmt.Sprintf("Error making API call to search: %v", err.Error()))
+		return &[]Video{}
 	}
 	videos := []Video{}
 

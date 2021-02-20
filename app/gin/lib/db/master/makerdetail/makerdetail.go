@@ -2,13 +2,16 @@ package makerdetail
 
 import (
 	"database/sql"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
-	dbConfig "local.packages/game-information/config/database"
+	dbInstance "local.packages/game-information/lib/db/master"
+	log "local.packages/game-information/lib/domain/log"
 )
+
+// Columns テストで利用する
+const Columns = []string{"maker_id", "ohp", "twitter_name", "youtube_channel_id", "youtube_keywords", "created_at", "updated_at"}
 
 // Schema table schema [ maker_detail ]
 type Schema struct {
@@ -21,24 +24,29 @@ type Schema struct {
 	UpdatedAt        time.Time
 }
 
-// GetList query [ select * from maker_detail where maker_id = ? ]
-func GetList(makerIDs []int64) *[]Schema {
+// MakerDetail インスタンス
+type MakerDetail struct {
+	DBInstance *sql.DB
+}
 
-	config := dbConfig.GetMaster()
-	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
-	db, err := sql.Open("mysql", connection)
-	if err != nil {
-		panic(err)
-	}
+// GetInstance インスタンス生成
+func GetInstance() *MakerDetail {
+	instance := dbInstance.GetInstance()
+	return &MakerDetail{DBInstance: instance.DB}
+}
+
+// GetList query [ select * from maker_detail where maker_id = ? ]
+func (db MakerDetail) GetList(makerIDs []int64) *[]Schema {
 
 	var strMakerIDs []string
 	for _, v := range makerIDs {
 		strMakerIDs = append(strMakerIDs, strconv.FormatInt(v, 10))
 	}
 
-	rows, err := db.Query("select * from maker_detail where maker_id IN (?)", strings.Join(strMakerIDs, ","))
+	rows, err := db.DBInstance.Query("select * from maker_detail where maker_id IN (?)", strings.Join(strMakerIDs, ","))
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 	defer rows.Close()
 
@@ -48,14 +56,16 @@ func GetList(makerIDs []int64) *[]Schema {
 		detail = Schema{}
 		err := rows.Scan(&detail.MakerID, &detail.OHP, &detail.TwitterName, &detail.YoutubeChannelID, &detail.YoutubeKeywords, &detail.CreatedAt, &detail.UpdatedAt)
 		if err != nil {
-			panic(err)
+			log.Error(err.Error())
+			return &[]Schema{}
 		}
 		details = append(details, detail)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 
 	return &details

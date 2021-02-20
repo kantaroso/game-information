@@ -14,13 +14,14 @@ func CreateMakerVideoAll(c *gin.Context) {
 		return
 	}
 
-	makers := domainMaker.GetMakerList()
+	domainMakerInstance := domainMaker.GetInstance()
+	makers := domainMakerInstance.GetMakerList()
 	if len(*makers) == 0 {
 		outjson(c, 200, gin.H{})
 		return
 	}
 	for _, item := range *makers {
-		if !domainMaker.UpdateVideoList(item.ID) {
+		if !domainMakerInstance.UpdateVideoList(item.ID) {
 			outError(c)
 			return
 		}
@@ -37,13 +38,14 @@ func CreateMakerVideo(c *gin.Context) {
 	}
 
 	path := c.Param("path")
-	maker := domainMaker.GetMaker(path)
+	domainMakerInstance := domainMaker.GetInstance()
+	maker := domainMakerInstance.GetMaker(path)
 	if maker.ID == 0 {
 		outNotFound(c)
 		return
 	}
 
-	if !domainMaker.UpdateVideoList(maker.ID) {
+	if !domainMakerInstance.UpdateVideoList(maker.ID) {
 		outError(c)
 		return
 	}
