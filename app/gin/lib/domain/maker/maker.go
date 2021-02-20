@@ -20,7 +20,7 @@ type Maker struct {
 
 // GetInstance インスタンス生成
 func GetInstance() *Maker {
-	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance()}
+	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: &domainYoutube.Youtube{}}
 }
 
 // GetMaker メーカー情報取得
