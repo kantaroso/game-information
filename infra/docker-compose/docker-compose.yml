@@ -2,7 +2,7 @@ version: "3"
 services:
   go:
     container_name: api
-    image: golang:1.13.8-alpine3.11
+    image: kantaroso/game-information-go-dev:latest
     tty: true
     volumes:
       - ../../app/gin:/go/src/game-information
