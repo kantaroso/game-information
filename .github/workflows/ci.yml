@@ -1,24 +1,15 @@
-name: go-ci
+name: ci
 
 on: [push]
 
 jobs:
-  setup:
+  golang-test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout branch
         uses: actions/checkout@v2
       - name: cd workspace
-        run: |
-          cd ${GITHUB_WORKSPACE}
-          pwd
-          ls -la
-  test:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
+        run: cd ${GITHUB_WORKSPACE}
       - name: test
-        run: |
-          ls -la
-          docker-compose -f infra/docker-compose/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
+        run: docker-compose -f infra/docker-compose/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
 
