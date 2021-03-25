@@ -6,7 +6,8 @@ import (
 	"strings"
 	"time"
 
-	dbConfig "local.packages/game-information/config/database"
+	dbInstance "local.packages/game-information/lib/db/master"
+	log "local.packages/game-information/lib/domain/log"
 	domainYoutube "local.packages/game-information/lib/domain/youtube"
 )
 
@@ -20,19 +21,24 @@ type Schema struct {
 	CreatedAt   time.Time
 }
 
+// MakerVideo インスタンス
+type MakerVideo struct {
+	DBInstance *sql.DB
+}
+
+// GetInstance インスタンス生成
+func GetInstance() *MakerVideo {
+	instance := dbInstance.GetInstance()
+	return &MakerVideo{DBInstance: instance.DB}
+}
+
 // GetList query [ select * from maker_video where maker_id = ? order by id DESC ]
-func GetList(makerID int64) *[]Schema {
+func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
-	config := dbConfig.GetMaster()
-	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
-	db, err := sql.Open("mysql", connection)
+	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
 	if err != nil {
-		panic(err)
-	}
-
-	rows, err := db.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
-	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 	defer rows.Close()
 
@@ -42,36 +48,32 @@ func GetList(makerID int64) *[]Schema {
 		video = Schema{}
 		err := rows.Scan(&video.ID, &video.MakerID, &video.VideoID, &video.Title, &video.PublishedAt, &video.CreatedAt)
 		if err != nil {
-			panic(err)
+			log.Error(err.Error())
+			return &[]Schema{}
 		}
 		videos = append(videos, video)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 
 	return &videos
 }
 
 // BulkInsert [ insert int maker_video(maker_id, video_id, title, published_at) value ....]
-func BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
-
-	config := dbConfig.GetMaster()
-	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
-	db, err := sql.Open("mysql", connection)
+func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
+	_, err := db.DBInstance.Query(db.CreateBulkInsertQuery(makerID, videos))
 	if err != nil {
-		panic(err)
-	}
-	_, err = db.Query(createBulkInsertQuery(makerID, videos))
-	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return false
 	}
 	return true
 }
 
-func createBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
+func (db *MakerVideo) CreateBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
 	baseSQLStr := "insert into maker_video (maker_id, video_id, title, published_at, created_at) values %s"
 	valueSQLStr := "(%d, '%s', '%s', '%s', '%s')"
 	var valueSQLArray []string

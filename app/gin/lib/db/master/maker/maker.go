@@ -2,10 +2,10 @@ package maker
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
-	dbConfig "local.packages/game-information/config/database"
+	dbInstance "local.packages/game-information/lib/db/master"
+	log "local.packages/game-information/lib/domain/log"
 )
 
 // Schema table schema [ maker ]
@@ -17,51 +17,53 @@ type Schema struct {
 	UpdatedAt time.Time
 }
 
+// Maker インスタンス
+type Maker struct {
+	DBInstance *sql.DB
+}
+
+// GetInstance インスタンス生成
+func GetInstance() *Maker {
+	instance := dbInstance.GetInstance()
+	return &Maker{DBInstance: instance.DB}
+}
+
 // Get query [ select * from maker where code = ? ]
-func Get(code string) *Schema {
+func (db *Maker) Get(code string) *Schema {
 
-	config := dbConfig.GetMaster()
-	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
-	db, err := sql.Open("mysql", connection)
-	if err != nil {
-		panic(err)
-	}
+	maker := &Schema{}
 
-	rows, err := db.Query("select * from maker where code = ?", code)
+	rows, err := db.DBInstance.Query("select * from maker where code = ?", code)
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &Schema{}
 	}
 	defer rows.Close()
 
-	maker := &Schema{}
 	for rows.Next() {
 		err := rows.Scan(&maker.ID, &maker.Name, &maker.Code, &maker.CreatedAt, &maker.UpdatedAt)
 		if err != nil {
-			panic(err)
+			log.Error(err.Error())
+			return &Schema{}
 		}
 	}
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &Schema{}
 	}
 
 	return maker
 }
 
 // GetList query [ select * from maker order by name ]
-func GetList() *[]Schema {
+func (db *Maker) GetList() *[]Schema {
 
-	config := dbConfig.GetMaster()
-	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
-	db, err := sql.Open("mysql", connection)
+	rows, err := db.DBInstance.Query("select * from maker order by name")
 	if err != nil {
-		panic(err)
-	}
-
-	rows, err := db.Query("select * from maker order by name")
-	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 	defer rows.Close()
 
@@ -71,14 +73,16 @@ func GetList() *[]Schema {
 		maker = Schema{}
 		err := rows.Scan(&maker.ID, &maker.Name, &maker.Code, &maker.CreatedAt, &maker.UpdatedAt)
 		if err != nil {
-			panic(err)
+			log.Error(err.Error())
+			return &[]Schema{}
 		}
 		makers = append(makers, maker)
 	}
 
 	err = rows.Err()
 	if err != nil {
-		panic(err)
+		log.Error(err.Error())
+		return &[]Schema{}
 	}
 
 	return &makers

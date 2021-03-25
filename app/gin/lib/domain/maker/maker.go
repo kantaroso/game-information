@@ -4,26 +4,39 @@ import (
 	"sort"
 	"time"
 
-	dbMaker "local.packages/game-information/lib/db/maker"
-	dbMakerdetail "local.packages/game-information/lib/db/makerdetail"
-	dbMakervideo "local.packages/game-information/lib/db/makervideo"
+	dbMaker "local.packages/game-information/lib/db/master/maker"
+	dbMakerdetail "local.packages/game-information/lib/db/master/makerdetail"
+	dbMakervideo "local.packages/game-information/lib/db/master/makervideo"
 	domainYoutube "local.packages/game-information/lib/domain/youtube"
 )
 
+// Maker インスタンス
+type Maker struct {
+	DBMaker       *dbMaker.Maker
+	DBMakerdetail *dbMakerdetail.MakerDetail
+	DBMakervideo  *dbMakervideo.MakerVideo
+	DomainYoutube domainYoutube.InterfaceYoutube
+}
+
+// GetInstance インスタンス生成
+func GetInstance() *Maker {
+	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: domainYoutube.GetInstance()}
+}
+
 // GetMaker メーカー情報取得
-func GetMaker(code string) *dbMaker.Schema {
-	return dbMaker.Get(code)
+func (domain *Maker) GetMaker(code string) *dbMaker.Schema {
+	return domain.DBMaker.Get(code)
 }
 
 // GetMakerList メーカー情報一覧取得
-func GetMakerList() *[]dbMaker.Schema {
-	return dbMaker.GetList()
+func (domain *Maker) GetMakerList() *[]dbMaker.Schema {
+	return domain.DBMaker.GetList()
 }
 
 // GetDetail メーカー情報詳細取得
-func GetDetail(makerID int64) *dbMakerdetail.Schema {
+func (domain *Maker) GetDetail(makerID int64) *dbMakerdetail.Schema {
 	mkaerIDs := []int64{makerID}
-	details := GetDetailList(mkaerIDs)
+	details := domain.GetDetailList(mkaerIDs)
 	if len(*details) == 0 {
 		return &dbMakerdetail.Schema{}
 	}
@@ -31,24 +44,24 @@ func GetDetail(makerID int64) *dbMakerdetail.Schema {
 }
 
 // GetDetailList メーカー情報詳細一覧取得
-func GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
-	return dbMakerdetail.GetList(mkaerIDs)
+func (domain *Maker) GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
+	return domain.DBMakerdetail.GetList(mkaerIDs)
 }
 
 // GetVideoList メーカー動画情報取得
-func GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
-	return dbMakervideo.GetList(mkaerID)
+func (domain *Maker) GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
+	return domain.DBMakervideo.GetList(mkaerID)
 }
 
 // UpdateVideoList 動画情報の更新
-func UpdateVideoList(makerID int64) bool {
+func (domain *Maker) UpdateVideoList(makerID int64) bool {
 
-	detail := GetDetail(makerID)
+	detail := domain.GetDetail(makerID)
 	if detail.YoutubeChannelID == "" {
 		return true
 	}
 
-	makervideos := GetVideoList(makerID)
+	makervideos := domain.GetVideoList(makerID)
 	latestat := ""
 	if len(*makervideos) != 0 {
 		// 形式：1970-01-01T00:00:00Z
@@ -57,7 +70,7 @@ func UpdateVideoList(makerID int64) bool {
 		latestat = (*makervideos)[0].PublishedAt.Add(1 * time.Second).Format(time.RFC3339)
 	}
 
-	videos := domainYoutube.GetVideos(detail.YoutubeChannelID, detail.YoutubeKeywords, latestat, "")
+	videos := domain.DomainYoutube.GetVideos(detail.YoutubeChannelID, detail.YoutubeKeywords, latestat, "")
 	if len(*videos) == 0 {
 		return true
 	}
@@ -65,6 +78,5 @@ func UpdateVideoList(makerID int64) bool {
 	sort.Slice(*videos, func(i, j int) bool { return (*videos)[i].PublishedAt.Unix() < (*videos)[j].PublishedAt.Unix() })
 
 	// データinsert
-	dbMakervideo.BulkInsert(makerID, videos)
-	return true
+	return domain.DBMakervideo.BulkInsert(makerID, videos)
 }

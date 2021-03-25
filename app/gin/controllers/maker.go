@@ -8,7 +8,8 @@ import (
 
 // GetMakerList メーカー一覧
 func GetMakerList(c *gin.Context) {
-	makers := domainMaker.GetMakerList()
+	domainMakerInstance := domainMaker.GetInstance()
+	makers := domainMakerInstance.GetMakerList()
 	if len(*makers) == 0 {
 		outjson(c, 200, gin.H{})
 		return
@@ -25,12 +26,13 @@ func GetMakerList(c *gin.Context) {
 // GetMakerInfo トップページの処理
 func GetMakerInfo(c *gin.Context) {
 	path := c.Param("path")
-	maker := domainMaker.GetMaker(path)
+	domainMakerInstance := domainMaker.GetInstance()
+	maker := domainMakerInstance.GetMaker(path)
 	if maker.ID == 0 {
 		outNotFound(c)
 		return
 	}
-	detail := domainMaker.GetDetail(maker.ID)
+	detail := domainMakerInstance.GetDetail(maker.ID)
 	outjson(c, 200, gin.H{
 		"code":         maker.Code,
 		"name":         maker.Name,
@@ -42,17 +44,18 @@ func GetMakerInfo(c *gin.Context) {
 // GetMakerVideos トップページの処理
 func GetMakerVideos(c *gin.Context) {
 	path := c.Param("path")
-	maker := domainMaker.GetMaker(path)
+	domainMakerInstance := domainMaker.GetInstance()
+	maker := domainMakerInstance.GetMaker(path)
 	if maker.ID == 0 {
 		outNotFound(c)
 		return
 	}
-	detail := domainMaker.GetDetail(maker.ID)
+	detail := domainMakerInstance.GetDetail(maker.ID)
 	if detail.YoutubeChannelID == "" {
 		outNotFound(c)
 		return
 	}
-	videos := domainMaker.GetVideoList(maker.ID)
+	videos := domainMakerInstance.GetVideoList(maker.ID)
 	if len(*videos) == 0 {
 		outNotFound(c)
 		return

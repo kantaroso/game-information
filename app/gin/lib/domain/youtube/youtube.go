@@ -1,13 +1,14 @@
 package youtube
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 	"os"
 	"time"
 
 	"google.golang.org/api/googleapi/transport"
 	"google.golang.org/api/youtube/v3"
+	log "local.packages/game-information/lib/domain/log"
 )
 
 // Video 動画情報
@@ -19,22 +20,37 @@ type Video struct {
 	Title       string
 }
 
+// InterfaceYoutube インターフェース
+type InterfaceYoutube interface {
+	getService() *youtube.Service
+	GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video
+}
+
+// Youtube インスタンス
+type Youtube struct {
+	DeveloperKey string
+}
+
+func GetInstance() *Youtube {
+	return &Youtube{DeveloperKey: os.Getenv("YOUTUBE_API_KEY")}
+}
+
 // getService serviceの生成
-func getService() *youtube.Service {
-	developerKey := os.Getenv("YOUTUBE_API_KEY")
+func (domain *Youtube) getService() *youtube.Service {
 	client := &http.Client{
-		Transport: &transport.APIKey{Key: developerKey},
+		Transport: &transport.APIKey{Key: domain.DeveloperKey},
 	}
 	service, err := youtube.New(client)
 	if err != nil {
-		log.Fatalf("Error creating new YouTube client: %v", err)
+		log.Error(fmt.Sprintf("Error creating new YouTube client: %v", err))
+		return nil
 	}
 	return service
 }
 
 // GetVideos youtubeからデータ取得
-func GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
-	service := getService()
+func (domain *Youtube) GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
+	service := domain.getService()
 	// test
 	order := "date"
 	var maxResult int64 = 50
@@ -54,12 +70,13 @@ func GetVideos(channelID string, query string, publishedAfter string, token stri
 
 	response, err := call.Do()
 	if err != nil {
-		log.Fatalf("Error making API call to search: %v", err.Error())
+		log.Error(fmt.Sprintf("Error making API call to search: %v", err.Error()))
+		return &[]Video{}
 	}
 	videos := []Video{}
 
 	if response.NextPageToken != "" {
-		videos = *GetVideos(channelID, query, publishedAfter, response.NextPageToken)
+		videos = *domain.GetVideos(channelID, query, publishedAfter, response.NextPageToken)
 	}
 
 	for _, item := range response.Items {

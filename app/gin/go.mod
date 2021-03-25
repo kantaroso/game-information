@@ -10,12 +10,17 @@ replace (
 	// debug
 	local.packages/game-information/debug => ./debug
 	// db
-	local.packages/game-information/lib/db/accesslog => ./lib/db/accesslog
-	local.packages/game-information/lib/db/maker => ./lib/db/maker
-	local.packages/game-information/lib/db/makerdetail => ./lib/db/makerdetail
-	local.packages/game-information/lib/db/makervideo => ./lib/db/makervideo
+	// analysis
+	local.packages/game-information/lib/db/analysis => ./lib/db/analysis
+	local.packages/game-information/lib/db/analysis/accesslog => ./lib/db/analysis/accesslog
+	// master
+	local.packages/game-information/lib/db/master => ./lib/db/master
+	local.packages/game-information/lib/db/master/maker => ./lib/db/master/maker
+	local.packages/game-information/lib/db/master/makerdetail => ./lib/db/master/makerdetail
+	local.packages/game-information/lib/db/master/makervideo => ./lib/db/master/makervideo
 	// domain
 	local.packages/game-information/lib/domain/accesslog => ./lib/domain/accesslog
+	local.packages/game-information/lib/domain/log => ./lib/domain/log
 	local.packages/game-information/lib/domain/maker => ./lib/domain/maker
 	local.packages/game-information/lib/domain/youtube => ./lib/domain/youtube
 )
@@ -35,11 +40,14 @@ require (
 	local.packages/game-information/config/database v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/controllers v0.0.0-00010101000000-000000000000
 	local.packages/game-information/debug v0.0.0-00010101000000-000000000000 // indirect
-	local.packages/game-information/lib/db/accesslog v0.0.0-00010101000000-000000000000 // indirect
-	local.packages/game-information/lib/db/maker v0.0.0-00010101000000-000000000000 // indirect
-	local.packages/game-information/lib/db/makerdetail v0.0.0-00010101000000-000000000000 // indirect
-	local.packages/game-information/lib/db/makervideo v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/analysis v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/analysis/accesslog v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/master v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/master/maker v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/master/makerdetail v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/db/master/makervideo v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/accesslog v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/domain/log v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/maker v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/youtube v0.0.0-00010101000000-000000000000 // indirect
 )
