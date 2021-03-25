@@ -11,5 +11,5 @@ jobs:
       - name: cd workspace
         run: cd ${GITHUB_WORKSPACE}
       - name: test
-        run: docker-compose -f infra/docker-compose/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
+        run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
 

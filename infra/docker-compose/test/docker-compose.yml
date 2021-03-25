@@ -1,0 +1,9 @@
+version: "3"
+services:
+  go:
+    container_name: api
+    image: kantaroso/game-information-go-dev:latest
+    tty: true
+    volumes:
+      - ../../app/gin:/go/src/game-information
+    working_dir: /go/src/game-information
