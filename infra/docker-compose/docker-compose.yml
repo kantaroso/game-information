@@ -10,6 +10,7 @@ services:
       - 80:8090
     env_file:
       - app.env
+    working_dir: /go/src/game-information
 
   vue:
     container_name: front
@@ -19,6 +20,7 @@ services:
       - ../../app/vue:/var/www/
     ports:
       - 8090:8080
+    working_dir: /var/www/front
 
   mysql:
     container_name: mysql
