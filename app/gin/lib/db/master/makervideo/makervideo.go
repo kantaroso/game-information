@@ -65,8 +65,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
 // BulkInsert [ insert int maker_video(maker_id, video_id, title, published_at) value ....]
 func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
-
-	_, err := db.DBInstance.Query(db.createBulkInsertQuery(makerID, videos))
+	_, err := db.DBInstance.Query(db.CreateBulkInsertQuery(makerID, videos))
 	if err != nil {
 		log.Error(err.Error())
 		return false
@@ -74,7 +73,7 @@ func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) b
 	return true
 }
 
-func (db *MakerVideo) createBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
+func (db *MakerVideo) CreateBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
 	baseSQLStr := "insert into maker_video (maker_id, video_id, title, published_at, created_at) values %s"
 	valueSQLStr := "(%d, '%s', '%s', '%s', '%s')"
 	var valueSQLArray []string

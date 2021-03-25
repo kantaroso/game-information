@@ -20,14 +20,25 @@ type Video struct {
 	Title       string
 }
 
+// InterfaceYoutube インターフェース
+type InterfaceYoutube interface {
+	getService() *youtube.Service
+	GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video
+}
+
 // Youtube インスタンス
-type Youtube struct{}
+type Youtube struct {
+	DeveloperKey string
+}
+
+func GetInstance() *Youtube {
+	return &Youtube{DeveloperKey: os.Getenv("YOUTUBE_API_KEY")}
+}
 
 // getService serviceの生成
-func getService() *youtube.Service {
-	developerKey := os.Getenv("YOUTUBE_API_KEY")
+func (domain *Youtube) getService() *youtube.Service {
 	client := &http.Client{
-		Transport: &transport.APIKey{Key: developerKey},
+		Transport: &transport.APIKey{Key: domain.DeveloperKey},
 	}
 	service, err := youtube.New(client)
 	if err != nil {
@@ -39,7 +50,7 @@ func getService() *youtube.Service {
 
 // GetVideos youtubeからデータ取得
 func (domain *Youtube) GetVideos(channelID string, query string, publishedAfter string, token string) *[]Video {
-	service := getService()
+	service := domain.getService()
 	// test
 	order := "date"
 	var maxResult int64 = 50

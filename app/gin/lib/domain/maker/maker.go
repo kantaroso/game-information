@@ -15,12 +15,12 @@ type Maker struct {
 	DBMaker       *dbMaker.Maker
 	DBMakerdetail *dbMakerdetail.MakerDetail
 	DBMakervideo  *dbMakervideo.MakerVideo
-	DomainYoutube *domainYoutube.Youtube
+	DomainYoutube domainYoutube.InterfaceYoutube
 }
 
 // GetInstance インスタンス生成
 func GetInstance() *Maker {
-	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: &domainYoutube.Youtube{}}
+	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: domainYoutube.GetInstance()}
 }
 
 // GetMaker メーカー情報取得
@@ -78,6 +78,5 @@ func (domain *Maker) UpdateVideoList(makerID int64) bool {
 	sort.Slice(*videos, func(i, j int) bool { return (*videos)[i].PublishedAt.Unix() < (*videos)[j].PublishedAt.Unix() })
 
 	// データinsert
-	domain.DBMakervideo.BulkInsert(makerID, videos)
-	return true
+	return domain.DBMakervideo.BulkInsert(makerID, videos)
 }
