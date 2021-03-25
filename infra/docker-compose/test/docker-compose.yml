@@ -5,5 +5,5 @@ services:
     image: kantaroso/game-information-go-dev:latest
     tty: true
     volumes:
-      - ../../app/gin:/go/src/game-information
+      - ../../../app/gin:/go/src/game-information
     working_dir: /go/src/game-information
