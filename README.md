@@ -37,5 +37,3 @@ go run main.go
 ## クエリ
 
 * [こちら](https://github.com/kantaroso/game-information/tree/master/documents/sql)
-
-test

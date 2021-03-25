@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   setup:
+    runs-on: ubuntu-latest
     steps:
       - name: checkout branch
         uses: actions/checkout@v2
