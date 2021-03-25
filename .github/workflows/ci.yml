@@ -8,12 +8,14 @@ jobs:
     steps:
       - name: checkout branch
         uses: actions/checkout@v2
+      - name: cd workspace
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          pwd
   test:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: test
-        run: |
-          cd ${GITHUB_WORKSPACE}
-          docker-compose -f infra/docker-compose/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
+        run: docker-compose -f infra/docker-compose/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
 
