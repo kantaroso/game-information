@@ -26,8 +26,6 @@ cd app/gin
 go run main.go
 
 ```
-##
-
 
 ## ローカル構築手順
 
