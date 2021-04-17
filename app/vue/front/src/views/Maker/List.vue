@@ -36,7 +36,7 @@ export default class Index extends Vue {
   items = null
   nolist = false
   mounted () {
-    axios.get('http://localhost/maker/list').then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/list`).then(
       res => {
         if (!res.data.length) {
           this.nolist = true

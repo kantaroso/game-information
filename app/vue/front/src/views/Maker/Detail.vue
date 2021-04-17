@@ -60,14 +60,14 @@ export default class Index extends Vue {
   videos = null
   code = this.$route.params.path
   mounted () {
-    axios.get('http://localhost/maker/detail/' + this.code).then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/detail/${this.code}`).then(
       res => {
         this.info = res.data
       }
     ).catch(
       error => console.log(error)
     )
-    axios.get('http://localhost/maker/videos/' + this.code).then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/videos/${this.code}`).then(
       res => {
         this.videos = res.data
       }
