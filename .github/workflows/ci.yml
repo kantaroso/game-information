@@ -15,10 +15,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ./tmp/cache/gomod
-          key: ${{ runner.os }}-${REPOSITORY_NAME}-gomod-v2
+          key: ${{ runner.os }}-${REPOSITORY_NAME}-gomod-v3
       - name: gomod download
         if: steps.gomod_cache_id.outputs.cache-hit != 'true'
         run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
+        run: sudo chmod -R 777 ./tmp/cache/gomod
       - name: test
         run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
 
