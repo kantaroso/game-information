@@ -10,6 +10,15 @@ jobs:
         uses: actions/checkout@v2
       - name: cd workspace
         run: cd ${GITHUB_WORKSPACE}
+      - name: cache gomod
+        id: gomod_cache_id
+        uses: actions/cache@v2
+        with:
+          path: /tmp/cache/gomod
+          key: ${{ runner.os }}-${REPOSITORY_NAME}-gomod
+      - name: gomod download
+        if: steps.gomod_cache_id.outputs.cache-hit != 'true'
+        run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
       - name: test
         run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
 
