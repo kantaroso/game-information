@@ -2,19 +2,15 @@
 ## 起動手順
 ```shell
 # docker 起動
-cd infra/docker-compose/
-docker-compose up -d
+docker-compose -f infra/docker-compose/docker-compose.yml up -d
 
 # vue起動
 # docker にログイン
 docker exec -it front /bin/sh
-
-cd /var/www/front
 npm run serve
 
 # go 起動
 docker exec -it api /bin/sh
-cd src/game-information/
 go run main.go
 
 # admin api

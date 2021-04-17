@@ -1,0 +1,42 @@
+name: ci
+
+on: [push]
+
+jobs:
+  golang-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v2
+      - name: cd workspace
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p ./tmp/cache/docker
+      - name: cache docker image
+        id: docker_image_cache_id
+        uses: actions/cache@v2
+        with:
+          path: ./tmp/cache/docker
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-${{hashFiles('./infra/docker/go/gin/dev/Dockerfile')}}-v1
+      - name: save docker image
+        if: steps.docker_image_cache_id.outputs.cache-hit != 'true'
+        run: |
+          docker pull kantaroso/game-information-go-dev:latest
+          docker save kantaroso/game-information-go-dev:latest > ./tmp/cache/docker/snapshot.tar
+      - name: load docker image
+        if: steps.docker_image_cache_id.outputs.cache-hit == 'true'
+        run: docker load -i ./tmp/cache/docker/snapshot.tar
+      - name: cache gomod
+        id: gomod_cache_id
+        uses: actions/cache@v2
+        with:
+          path: ./tmp/cache/gomod
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-gomod
+      - name: gomod download
+        if: steps.gomod_cache_id.outputs.cache-hit != 'true'
+        run: |
+          docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
+          sudo chmod -R 777 ./tmp/cache/gomod
+      - name: test
+        run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover local.packages/game-information/lib/domain/...
+

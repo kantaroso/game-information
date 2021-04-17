@@ -2,7 +2,7 @@ version: "3"
 services:
   go:
     container_name: api
-    image: golang:1.13.8-alpine3.11
+    image: kantaroso/game-information-go-dev:latest
     tty: true
     volumes:
       - ../../app/gin:/go/src/game-information
@@ -10,6 +10,7 @@ services:
       - 80:8090
     env_file:
       - app.env
+    working_dir: /go/src/game-information
 
   vue:
     container_name: front
@@ -19,6 +20,7 @@ services:
       - ../../app/vue:/var/www/
     ports:
       - 8090:8080
+    working_dir: /var/www/front
 
   mysql:
     container_name: mysql
