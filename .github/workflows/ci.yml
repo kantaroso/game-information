@@ -14,6 +14,7 @@ jobs:
           mkdir -p ./tmp/cache/docker
       - name: cache docker image
         id: docker_image_cache_id
+        uses: actions/cache@v2
         with:
           path: ./tmp/cache/docker
           key: ${{ runner.os }}-${{REPOSITORY_NAME}}-${{hashFiles('./infra/docker/go/gin/dev/Dockerfile')}}-v1
