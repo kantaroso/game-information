@@ -17,7 +17,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ./tmp/cache/docker
-          key: ${{ runner.os }}-${{GITHUB_REPOSITORY}}-${{hashFiles('./infra/docker/go/gin/dev/Dockerfile')}}-v1
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-${{hashFiles('./infra/docker/go/gin/dev/Dockerfile')}}-v1
       - name: save docker image
         if: steps.docker_image_cache_id.outputs.cache-hit != 'true'
         run: |
@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ./tmp/cache/gomod
-          key: ${{ runner.os }}-${{GITHUB_REPOSITORY}}-gomod
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-gomod
       - name: gomod download
         if: steps.gomod_cache_id.outputs.cache-hit != 'true'
         run: |
