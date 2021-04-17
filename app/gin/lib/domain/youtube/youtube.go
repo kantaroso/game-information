@@ -32,7 +32,7 @@ type Youtube struct {
 }
 
 func GetInstance() *Youtube {
-	return &Youtube{DeveloperKey: os.Getenv("YOUTUBE_API_KEY", "test")}
+	return &Youtube{DeveloperKey: os.Getenv("YOUTUBE_API_KEY")}
 }
 
 // getService serviceの生成
