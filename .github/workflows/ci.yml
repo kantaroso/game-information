@@ -14,8 +14,8 @@ jobs:
         id: gomod_cache_id
         uses: actions/cache@v2
         with:
-          path: /tmp/cache/gomod
-          key: ${{ runner.os }}-${REPOSITORY_NAME}-gomod
+          path: ./tmp/cache/gomod
+          key: ${{ runner.os }}-${REPOSITORY_NAME}-gomod-v2
       - name: gomod download
         if: steps.gomod_cache_id.outputs.cache-hit != 'true'
         run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
