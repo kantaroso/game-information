@@ -36,7 +36,7 @@ export default class Index extends Vue {
   items = null
   nolist = false
   mounted () {
-    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/list`).then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/list`, { timeout: 5000 }).then(
       res => {
         if (!res.data.length) {
           this.nolist = true
@@ -45,7 +45,10 @@ export default class Index extends Vue {
         }
       }
     ).catch(
-      error => console.log(error)
+      error => {
+        alert('データの取得に失敗しました')
+        console.log(error)
+      }
     )
   }
 }
