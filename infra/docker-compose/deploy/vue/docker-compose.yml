@@ -1,0 +1,12 @@
+version: "3"
+services:
+  node:
+    container_name: deploy
+    image: kantaroso/game-information-firebase:latest
+    tty: true
+    ports:
+      - 5000:5000
+      - 9005:9005
+    volumes:
+      - ../../../..:/usr/src/app
+    working_dir: /usr/src/app
