@@ -15,3 +15,8 @@ firebase emulators:start
 ```shell
 firebase deploy --only hosting
 ```
+
+### 非公開にする
+```shell
+firebase hosting:disable
+```
