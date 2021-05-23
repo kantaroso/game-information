@@ -2,5 +2,6 @@
 .vscode
 /infra/data/mysql
 /app/gin/main
+/app/gin/cmd
 /game-information.code-workspace
 /infra/docker-compose/app.env
