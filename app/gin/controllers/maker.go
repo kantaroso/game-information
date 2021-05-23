@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	domainMaker "local.packages/game-information/lib/domain/maker"
 
 	"github.com/gin-gonic/gin"
@@ -8,11 +10,14 @@ import (
 
 // GetMakerList メーカー一覧
 func GetMakerList(c *gin.Context) {
+	outjson(c, 200, wrapperGetMakerList())
+}
+
+func wrapperGetMakerList() interface{} {
 	domainMakerInstance := domainMaker.GetInstance()
 	makers := domainMakerInstance.GetMakerList()
 	if len(*makers) == 0 {
-		outjson(c, 200, gin.H{})
-		return
+		return gin.H{}
 	}
 	var results []map[string]string
 	var result map[string]string
@@ -20,7 +25,13 @@ func GetMakerList(c *gin.Context) {
 		result = map[string]string{"code": v.Code, "name": v.Name}
 		results = append(results, result)
 	}
-	outjson(c, 200, results)
+	return results
+}
+
+func MakeMakerListJson() {
+	path := "/maker/list"
+	body, _ := json.Marshal(wrapperGetMakerList())
+	makeJson(path, body)
 }
 
 // GetMakerInfo トップページの処理
@@ -29,7 +40,7 @@ func GetMakerInfo(c *gin.Context) {
 	domainMakerInstance := domainMaker.GetInstance()
 	maker := domainMakerInstance.GetMaker(path)
 	if maker.ID == 0 {
-		outNotFound(c)
+		outjson(c, 404, gin.H{})
 		return
 	}
 	detail := domainMakerInstance.GetDetail(maker.ID)
@@ -47,17 +58,17 @@ func GetMakerVideos(c *gin.Context) {
 	domainMakerInstance := domainMaker.GetInstance()
 	maker := domainMakerInstance.GetMaker(path)
 	if maker.ID == 0 {
-		outNotFound(c)
+		outjson(c, 404, gin.H{})
 		return
 	}
 	detail := domainMakerInstance.GetDetail(maker.ID)
 	if detail.YoutubeChannelID == "" {
-		outNotFound(c)
+		outjson(c, 404, gin.H{})
 		return
 	}
 	videos := domainMakerInstance.GetVideoList(maker.ID)
 	if len(*videos) == 0 {
-		outNotFound(c)
+		outjson(c, 404, gin.H{})
 		return
 	}
 
