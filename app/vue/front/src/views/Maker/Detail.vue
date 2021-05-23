@@ -14,7 +14,7 @@
       <b-row>
         <b-col cols="8">
           <div v-if="videos">
-            <b-list-group>
+            <b-list-group v-if="videos.length > 0">
               <b-list-group-item v-for="video in videos" :key="video.ID">
                 <b-embed
                   type="iframe"
@@ -60,19 +60,24 @@ export default class Index extends Vue {
   videos = null
   code = this.$route.params.path
   mounted () {
-    axios.get('http://localhost/maker/detail/' + this.code).then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/detail/${this.code}`, { timeout: 5000 }).then(
       res => {
         this.info = res.data
       }
     ).catch(
-      error => console.log(error)
+      error => {
+        alert('データの取得に失敗しました')
+        console.log(error)
+      }
     )
-    axios.get('http://localhost/maker/videos/' + this.code).then(
+    axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/videos/${this.code}`, { timeout: 5000 }).then(
       res => {
         this.videos = res.data
       }
     ).catch(
-      error => console.log(error)
+      error => {
+        console.log(error)
+      }
     )
   }
 }

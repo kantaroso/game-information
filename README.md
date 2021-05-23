@@ -35,3 +35,16 @@ go run main.go
 ## クエリ
 
 * [こちら](https://github.com/kantaroso/game-information/tree/master/documents/sql)
+
+## dockerイメージのデプロイ
+
+* ログイン
+```
+docker login
+```
+
+* [makeファイル](Makefile)で実行
+
+## デプロイ
+
+* [こちら](infra/docker-compose/deploy/vue/README.md)
