@@ -30,7 +30,7 @@ func getJsonFromFile(path string) string {
 	bytes, err := ioutil.ReadFile(makeTargetJsonFilePath(path))
 	if err != nil {
 		fmt.Println(err)
-		return ""
+		return "{}"
 	}
 	return string(bytes)
 }
@@ -44,4 +44,12 @@ func isProduction() bool {
 		return true
 	}
 	return false
+}
+
+func renderProduction(c *gin.Context) bool {
+	if !isProduction() {
+		return false
+	}
+	outjsonFromText(c, 200, getJsonFromFile(c.Request.URL.Path))
+	return true
 }

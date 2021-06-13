@@ -26,10 +26,10 @@ func makepageAllAction() {
 	controllers.MakeMakerListJson()
 
 	fmt.Println("path:/maker/detail/*")
-	//controllers.MakePvJson()
+	controllers.MakeMakerInfoJson()
 
 	fmt.Println("path:/maker/videos/*")
-	//controllers.MakePvJson()
+	controllers.MakeMakerVideosJson()
 
 	fmt.Println("success!!")
 }

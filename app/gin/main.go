@@ -14,7 +14,7 @@ import (
 func main() {
 
 	router := gin.Default()
-	// API
+
 	router.GET("/common/pv", func(c *gin.Context) { controllers.Pv(c) })
 	router.GET("/maker/list", func(c *gin.Context) { controllers.GetMakerList(c) })
 	router.GET("/maker/detail/:path", func(c *gin.Context) { controllers.GetMakerInfo(c) })

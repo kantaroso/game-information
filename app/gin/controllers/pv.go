@@ -1,19 +1,13 @@
 package controllers
 
 import (
-	"encoding/json"
-
 	"github.com/gin-gonic/gin"
 	domainAccesslog "local.packages/game-information/lib/domain/accesslog"
 )
 
-const pathCommonPV = "/common/pv"
-
 // Pv トップページの処理
 func Pv(c *gin.Context) {
-	if isProduction() {
-		body := getJsonFromFile(pathCommonPV)
-		outjsonFromText(c, 200, body)
+	if renderProduction(c) {
 		return
 	}
 	domainAccesslogInstance := domainAccesslog.GetInstance()
@@ -22,9 +16,4 @@ func Pv(c *gin.Context) {
 	outjson(c, 200, gin.H{
 		"pv": accessCount,
 	})
-}
-
-func MakePvJson() {
-	body, _ := json.Marshal(gin.H{"pv": 0})
-	makeJson(pathCommonPV, body)
 }
