@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+
 	"github.com/gin-gonic/gin"
 	domainAccesslog "local.packages/game-information/lib/domain/accesslog"
 )
@@ -16,4 +18,10 @@ func Pv(c *gin.Context) {
 	outjson(c, 200, gin.H{
 		"pv": accessCount,
 	})
+}
+
+// Pv 静的ページ
+func MakePvJson() {
+	body, _ := json.Marshal(gin.H{"pv": 0})
+	makeJson("/common/pv", body)
 }
