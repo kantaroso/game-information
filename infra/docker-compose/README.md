@@ -1,20 +1,34 @@
 
 ## 起動手順
 ```shell
-# docker 起動
+# ローカル起動
 docker-compose -f infra/docker-compose/docker-compose.yml up -d
+```
 
+## frontend
+```shell
 # vue起動
 # docker にログイン
 docker exec -it front /bin/sh
 npm run serve
+```
 
+## api
+```shell
 # go 起動
 docker exec -it api /bin/sh
+# サービス起動
 go run main.go
+# テスト実行
+go test -cover local.packages/game-information/lib/domain/...
 
-# admin api
-wget http://localhost/admin/create/mkaer/video/3rdeye -O -
+# cli
+## youtubeの動画データを更新する ※引数指定で特定のゲームだけ更新可能
+go run cmd.go makevideo
+go run cmd.go makevideo august
+## pagedataのキャッシュを生成する
+go run cmd.go makepage
+
 ```
 
 ## 初回構築手順

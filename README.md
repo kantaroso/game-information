@@ -48,3 +48,14 @@ docker login
 ## デプロイ
 
 * [こちら](infra/docker-compose/deploy/vue/README.md)
+
+## マスターデータ作成
+
+* go のローカル環境を使用する
+```shell
+# 各種ページ作成
+go run cmd.go makepage
+
+# youtubeからのデータ取得
+go run cmd.go makevideo
+```

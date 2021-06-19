@@ -5,6 +5,7 @@ import (
 	"local.packages/game-information/debug"
 )
 
+// "local.packages/game-information/lib/domain/log"
 const prefixInfo = "[info] "
 const prefixDebug = "[debug] "
 const prefixError = "[error] "
