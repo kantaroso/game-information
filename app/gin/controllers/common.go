@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Health(c *gin.Context) {
+	outjson(c, 200, gin.H{})
+}
+
 func outjson(c *gin.Context, code int, obj interface{}) {
 	c.Header("access-control-allow-origin", "*")
 	c.JSON(code, obj)
