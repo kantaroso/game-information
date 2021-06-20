@@ -15,4 +15,4 @@ build-docker-go-dev:
 build-vue-assets-prod:
 	docker-compose -f ./infra/docker-compose/docker-compose.yml run --rm vue npm run build
 build-go-main:
-	docker run -it -v ${PWD}/app/gin:/go/src/game-information -w=/go/src/game-information kantaroso/game-information-go-dev:latest go build main.go
+	docker-compose -f ./infra/docker-compose/docker-compose.yml run --rm go go build main.go
