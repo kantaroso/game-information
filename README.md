@@ -47,7 +47,8 @@ docker login
 
 ## デプロイ
 
-* [こちら](infra/docker-compose/deploy/vue/README.md)
+* [手順](infra/docker-compose/deploy/README.md)
+
 
 ## マスターデータ作成
 

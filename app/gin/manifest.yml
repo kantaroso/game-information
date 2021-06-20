@@ -1,0 +1,6 @@
+ applications:
+ - name: gameinfomation
+   memory: 64M
+   env:
+      GOVERSION: go1.14
+      IS_PROD: true

@@ -63,6 +63,10 @@ export default class Index extends Vue {
     axios.get(`${process.env.VUE_APP_API_ORIGIN}/maker/detail/${this.code}`, { timeout: 5000 }).then(
       res => {
         this.info = res.data
+        const twitterScript = document.createElement('script')
+        twitterScript.setAttribute('src', 'https://platform.twitter.com/widgets.js')
+        twitterScript.setAttribute('async', 'async')
+        document.head.appendChild(twitterScript)
       }
     ).catch(
       error => {

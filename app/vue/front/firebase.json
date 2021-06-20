@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "./app/vue/front/dist",
+    "public": "./dist",
     "ignore": [
       "firebase.json",
       "**/.*",
