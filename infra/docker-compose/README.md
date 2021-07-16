@@ -15,7 +15,7 @@ npm run serve
 
 ## api
 ```shell
-# go 起動
+# コンテナ ログイン
 docker exec -it api /bin/sh
 # サービス起動
 go run main.go
