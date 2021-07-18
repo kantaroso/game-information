@@ -114,7 +114,7 @@ func wrapperGetMakerVideos(path string) []map[string]string {
 
 	var response []map[string]string
 	for _, item := range *videos {
-		response = append(response, map[string]string{"ID": item.VideoID})
+		response = append(response, map[string]string{"id": item.VideoID, "title": item.Title})
 	}
 	return response
 }

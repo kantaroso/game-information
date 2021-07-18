@@ -7,6 +7,11 @@ docker-compose -f infra/docker-compose/deploy/docker-compose.yml up -d
 
 ## フロントエンド
 
+### リリース用ファイル生成
+```shell
+make build-vue-assets-prod
+```
+
 ### コンテナに入る
 ```shell
 docker exec -it deploy-frontend sh
@@ -36,6 +41,9 @@ firebase hosting:disable
 ```
 
 ## バックエンド
+
+### リリース用ファイル生成
+* [こちら](infra/docker-compose/README.md##api)
 
 ### コンテナに入る
 ```shell
