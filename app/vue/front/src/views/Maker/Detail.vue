@@ -10,6 +10,25 @@
     <div v-else>
       <h3><b-spinner label="Loading..."></b-spinner></h3>
     </div>
+    <p v-if="info && info.twitter_name">
+      <b-container>
+        <b-row align-h="center">
+          <b-col cols="10">
+            <a
+              class="twitter-timeline"
+              data-height="500"
+              data-lang="ja"
+              data-theme="dark"
+              :href="`https://twitter.com/${info.twitter_name}`"
+              >Tweets by {{ info.twitter_name }}</a
+            >
+          </b-col>
+        </b-row>
+      </b-container>
+    </p>
+    <p v-else>
+      <b-spinner label="Loading..."></b-spinner>
+    </p>
     <p v-if="splitVideos.length > 0">
       <b-container>
         <b-row
@@ -41,25 +60,6 @@
                 </div>
               </div>
             </b-card>
-          </b-col>
-        </b-row>
-      </b-container>
-    </p>
-    <p v-else>
-      <b-spinner label="Loading..."></b-spinner>
-    </p>
-    <p v-if="info && info.twitter_name">
-      <b-container>
-        <b-row align-h="center">
-          <b-col cols="10">
-            <a
-              class="twitter-timeline"
-              data-height="500"
-              data-lang="ja"
-              data-theme="dark"
-              :href="`https://twitter.com/${info.twitter_name}`"
-              >Tweets by {{ info.twitter_name }}</a
-            >
           </b-col>
         </b-row>
       </b-container>
@@ -113,7 +113,7 @@ export default class Index extends Vue {
   info = null;
   splitVideos: Array<SpritVideo> = [];
   code = this.$route.params.path;
-  moviePlayModal: any
+  moviePlayModal: any // eslint-disable-line @typescript-eslint/no-explicit-any
   modelVideoID = ''
   showModal (id: string) {
     this.modelVideoID = id
@@ -158,9 +158,7 @@ export default class Index extends Vue {
             }
           }
           tmp[key].videos.push(element)
-          console.log(tmp[key].videos)
         })
-        console.log(tmp)
         this.splitVideos = tmp
       })
       .catch(() => {
@@ -190,7 +188,6 @@ export default class Index extends Vue {
   width: 30%;
 }
 .movie-thumbnail-hover ._text {
-  font-size: 70%;
   position: absolute;
   top: 5%;
   left: 5%;
@@ -202,4 +199,10 @@ export default class Index extends Vue {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
+@media (orientation: portrait){
+  .movie-thumbnail-hover ._text {
+    font-size: 70%;
+  }
+}
+
 </style>
