@@ -44,7 +44,7 @@
             fluid
           >
             <b-card>
-              <div class="movie-thumbnail-hover" @click="showModal(video.id)">
+              <div class="movie-thumbnail-list" @click="showModal(video.id)">
                 <b-card-img-lazy
                   thumbnail
                   :src="`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`"
@@ -113,8 +113,8 @@ export default class Index extends Vue {
   info = null;
   splitVideos: Array<SpritVideo> = [];
   code = this.$route.params.path;
-  moviePlayModal: any // eslint-disable-line @typescript-eslint/no-explicit-any
-  modelVideoID = ''
+  moviePlayModal: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  modelVideoID = '';
   showModal (id: string) {
     this.modelVideoID = id
     this.moviePlayModal.show()
@@ -169,10 +169,10 @@ export default class Index extends Vue {
 </script>
 
 <style>
-.movie-thumbnail-hover {
+.movie-thumbnail-list {
   position: relative;
 }
-.movie-thumbnail-hover ._mask {
+.movie-thumbnail-list ._mask {
   position: absolute;
   display: grid;
   align-items: center;
@@ -181,13 +181,14 @@ export default class Index extends Vue {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color:black;
+  background-color: black;
   opacity: 0.5;
 }
-.movie-thumbnail-hover ._img {
+.movie-thumbnail-list ._img {
+  position: absolute;
   width: 30%;
 }
-.movie-thumbnail-hover ._text {
+.movie-thumbnail-list ._text {
   position: absolute;
   top: 5%;
   left: 5%;
@@ -199,10 +200,9 @@ export default class Index extends Vue {
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
-@media (orientation: portrait){
-  .movie-thumbnail-hover ._text {
+@media (orientation: portrait) {
+  .movie-thumbnail-list ._text {
     font-size: 70%;
   }
 }
-
 </style>
