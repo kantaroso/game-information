@@ -1,6 +1,7 @@
 .firebase
 .vscode
 /infra/data/mysql
+/app/gin/assets/credentials/secret.json
 /app/gin/main
 /app/gin/cmd
 /game-information.code-workspace

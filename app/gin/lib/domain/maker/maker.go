@@ -1,26 +1,52 @@
 package maker
 
 import (
+	"fmt"
 	"sort"
 	"time"
 
 	dbMaker "local.packages/game-information/lib/db/master/maker"
 	dbMakerdetail "local.packages/game-information/lib/db/master/makerdetail"
 	dbMakervideo "local.packages/game-information/lib/db/master/makervideo"
+	domainSpreadsheet "local.packages/game-information/lib/domain/spreadsheet"
 	domainYoutube "local.packages/game-information/lib/domain/youtube"
 )
 
 // Maker インスタンス
 type Maker struct {
-	DBMaker       *dbMaker.Maker
-	DBMakerdetail *dbMakerdetail.MakerDetail
-	DBMakervideo  *dbMakervideo.MakerVideo
-	DomainYoutube domainYoutube.InterfaceYoutube
+	DBMaker           *dbMaker.Maker
+	DBMakerdetail     *dbMakerdetail.MakerDetail
+	DBMakervideo      *dbMakervideo.MakerVideo
+	DomainYoutube     domainYoutube.InterfaceYoutube
+	DomainSpreadsheet domainSpreadsheet.InterfaceSpreadsheet
+}
+
+const spreadsheetName = "maker"
+
+// spreadsheetの値のmapping
+func getSpreadsheetSettings() map[string]int {
+	settings := map[string]int{
+		"id":                 1,
+		"name":               2,
+		"code":               3,
+		"ohp_url":            4,
+		"twitter_name":       5,
+		"youtube_channel_id": 6,
+		"youtube_keywords":   7,
+	}
+	return settings
+}
+
+// spreadsheetからデータを取得するためのrange文字列の生成
+func getSpreadsheetRange() string {
+	settings := getSpreadsheetSettings()
+	endAlphabet := domainSpreadsheet.ConvertColNumberToAlphabet(len(settings))
+	return fmt.Sprintf("%s!A2:%s1000", spreadsheetName, endAlphabet)
 }
 
 // GetInstance インスタンス生成
 func GetInstance() *Maker {
-	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: domainYoutube.GetInstance()}
+	return &Maker{DBMaker: dbMaker.GetInstance(), DBMakerdetail: dbMakerdetail.GetInstance(), DBMakervideo: dbMakervideo.GetInstance(), DomainYoutube: domainYoutube.GetInstance(), DomainSpreadsheet: domainSpreadsheet.GetInstance()}
 }
 
 // GetMaker メーカー情報取得
@@ -51,6 +77,18 @@ func (domain *Maker) GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
 // GetVideoList メーカー動画情報取得
 func (domain *Maker) GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
 	return domain.DBMakervideo.GetList(mkaerID)
+}
+
+// UpdateMaker Maker,MakerDetailの更新
+func (domain *Maker) UpdateMakerList() bool {
+	res := domain.DomainSpreadsheet.GetSheetData(getSpreadsheetRange())
+	if res == nil {
+		return false
+	}
+	for _, row := range res.Values {
+		fmt.Printf("%s, %s\n", row[0], row[1])
+	}
+	return true
 }
 
 // UpdateVideoList 動画情報の更新
