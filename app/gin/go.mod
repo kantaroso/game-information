@@ -24,6 +24,7 @@ replace (
 	local.packages/game-information/lib/domain/accesslog => ./lib/domain/accesslog
 	local.packages/game-information/lib/domain/log => ./lib/domain/log
 	local.packages/game-information/lib/domain/maker => ./lib/domain/maker
+	local.packages/game-information/lib/domain/spreadsheet => ./lib/domain/spreadsheet
 	local.packages/game-information/lib/domain/youtube => ./lib/domain/youtube
 )
 
@@ -49,5 +50,6 @@ require (
 	local.packages/game-information/lib/domain/accesslog v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/log v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/maker v0.0.0-00010101000000-000000000000 // indirect
+	local.packages/game-information/lib/domain/spreadsheet v0.0.0-00010101000000-000000000000 // indirect
 	local.packages/game-information/lib/domain/youtube v0.0.0-00010101000000-000000000000 // indirect
 )

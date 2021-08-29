@@ -2,6 +2,7 @@ package makerdetail
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -40,7 +41,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 		strMakerIDs = append(strMakerIDs, strconv.FormatInt(v, 10))
 	}
 
-	rows, err := db.DBInstance.Query("select * from maker_detail where maker_id IN (?)", strings.Join(strMakerIDs, ","))
+	rows, err := db.DBInstance.Query(db.CreateSelectQuery(strings.Join(strMakerIDs, ",")))
 	if err != nil {
 		log.Error(err.Error())
 		return &[]Schema{}
@@ -66,4 +67,39 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 	}
 
 	return &details
+}
+
+// Insert [insert into maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values (?,?,?,?,?)]
+func (db *MakerDetail) Insert(schemas *[]Schema) bool {
+	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	return true
+}
+
+// Update [update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=? where maker_id=?]
+func (db *MakerDetail) Update(schema *Schema) bool {
+	_, err := db.DBInstance.Exec("update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=NOW() where maker_id=?", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	return true
+}
+
+func (db *MakerDetail) CreateBulkInsertQuery(schemas *[]Schema) string {
+	baseSQLStr := "insert into maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values %s"
+	valueSQLStr := "(%d, '%s', '%s', '%s', '%s', NOW(), NOW())"
+	var valueSQLArray []string
+	for _, item := range *schemas {
+		valueSQLArray = append(valueSQLArray, fmt.Sprintf(valueSQLStr, item.MakerID, item.OHP, item.TwitterName, item.YoutubeChannelID, item.YoutubeKeywords))
+	}
+	return fmt.Sprintf(baseSQLStr, strings.Join(valueSQLArray, ","))
+}
+
+func (db *MakerDetail) CreateSelectQuery(IDs string) string {
+	baseSQLStr := "select * from maker_detail where maker_id IN (%s)"
+	return fmt.Sprintf(baseSQLStr, IDs)
 }

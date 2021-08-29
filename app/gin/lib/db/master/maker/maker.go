@@ -2,6 +2,8 @@ package maker
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 	"time"
 
 	dbInstance "local.packages/game-information/lib/db/master"
@@ -57,10 +59,10 @@ func (db *Maker) Get(code string) *Schema {
 	return maker
 }
 
-// GetList query [ select * from maker order by name ]
+// GetList query [ select * from maker order by id ]
 func (db *Maker) GetList() *[]Schema {
 
-	rows, err := db.DBInstance.Query("select * from maker order by name")
+	rows, err := db.DBInstance.Query("select * from maker order by id")
 	if err != nil {
 		log.Error(err.Error())
 		return &[]Schema{}
@@ -86,4 +88,34 @@ func (db *Maker) GetList() *[]Schema {
 	}
 
 	return &makers
+}
+
+// Insert [insert into maker(id, name, code, created_at, updated_at) values (?,?,?,?,?)]
+func (db *Maker) Insert(schemas *[]Schema) bool {
+	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	return true
+}
+
+// Update [update maker set name=?, code=?, updated_at=? where id=?]
+func (db *Maker) Update(schema *Schema) bool {
+	_, err := db.DBInstance.Exec("update maker set name=?, code=?, updated_at=NOW() where id=?", schema.Name, schema.Code, schema.ID)
+	if err != nil {
+		log.Error(err.Error())
+		return false
+	}
+	return true
+}
+
+func (db *Maker) CreateBulkInsertQuery(schemas *[]Schema) string {
+	baseSQLStr := "insert into maker(id, name, code, created_at, updated_at) values %s"
+	valueSQLStr := "(%d, '%s', '%s', NOW(), NOW())"
+	var valueSQLArray []string
+	for _, item := range *schemas {
+		valueSQLArray = append(valueSQLArray, fmt.Sprintf(valueSQLStr, item.ID, item.Name, item.Code))
+	}
+	return fmt.Sprintf(baseSQLStr, strings.Join(valueSQLArray, ","))
 }
