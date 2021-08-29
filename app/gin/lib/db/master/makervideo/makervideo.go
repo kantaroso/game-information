@@ -65,7 +65,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
 // BulkInsert [ insert int maker_video(maker_id, video_id, title, published_at) value ....]
 func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
-	_, err := db.DBInstance.Query(db.CreateBulkInsertQuery(makerID, videos))
+	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(makerID, videos))
 	if err != nil {
 		log.Error(err.Error())
 		return false
@@ -75,12 +75,11 @@ func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) b
 
 func (db *MakerVideo) CreateBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
 	baseSQLStr := "insert into maker_video (maker_id, video_id, title, published_at, created_at) values %s"
-	valueSQLStr := "(%d, '%s', '%s', '%s', '%s')"
+	valueSQLStr := "(%d, '%s', '%s', '%s', NOW())"
 	var valueSQLArray []string
 	jst, _ := time.LoadLocation("Asia/Tokyo")
-	createdAt := time.Now().In(jst).Format("2006-01-02 15:04:05")
 	for _, item := range *videos {
-		valueSQLArray = append(valueSQLArray, fmt.Sprintf(valueSQLStr, makerID, item.ID, item.Title, item.PublishedAt.In(jst).Format("2006-01-02 15:04:05"), createdAt))
+		valueSQLArray = append(valueSQLArray, fmt.Sprintf(valueSQLStr, makerID, item.ID, item.Title, item.PublishedAt.In(jst).Format("2006-01-02 15:04:05")))
 	}
 	return fmt.Sprintf(baseSQLStr, strings.Join(valueSQLArray, ","))
 }

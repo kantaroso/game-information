@@ -28,6 +28,8 @@ go run cmd.go makevideo
 go run cmd.go makevideo august
 ## pagedataのキャッシュを生成する
 go run cmd.go makepage
+## スプレッドシートからゲーム情報を登録する
+go run cmd.go makemaster maker
 
 ```
 

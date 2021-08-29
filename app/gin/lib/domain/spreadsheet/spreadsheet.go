@@ -13,7 +13,7 @@ import (
 // InterfaceYoutube インターフェース
 type InterfaceSpreadsheet interface {
 	getService() *sheets.Service
-	GetSheetData(sheetName string) *sheets.ValueRange
+	GetSheetData(sheetName string) [][]interface{}
 }
 
 // SpreadSheet インスタンス
@@ -40,7 +40,7 @@ func (domain *Spreadsheet) getService() *sheets.Service {
 }
 
 // GetSheetData spreadsheetからデータ取得
-func (domain *Spreadsheet) GetSheetData(sheetRange string) *sheets.ValueRange {
+func (domain *Spreadsheet) GetSheetData(sheetRange string) [][]interface{} {
 	service := domain.getService()
 	res, err := service.Spreadsheets.Values.Get(domain.SheetID, sheetRange).Do()
 	if err != nil {
@@ -53,7 +53,7 @@ func (domain *Spreadsheet) GetSheetData(sheetRange string) *sheets.ValueRange {
 		return nil
 	}
 
-	return res
+	return res.Values
 }
 
 // ConvertColNumberToAlphabet 数値をアルファベットに変換

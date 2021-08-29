@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"sort"
 
 	domainMaker "local.packages/game-information/lib/domain/maker"
 
@@ -25,6 +26,7 @@ func wrapperGetMakerList() []map[string]string {
 	}
 	var results []map[string]string
 	var result map[string]string
+	sort.SliceStable(*makers, func(i, j int) bool { return (*makers)[i].Name < (*makers)[j].Name })
 	for _, v := range *makers {
 		result = map[string]string{"code": v.Code, "name": v.Name}
 		results = append(results, result)

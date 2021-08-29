@@ -3,11 +3,13 @@ package maker
 import (
 	"fmt"
 	"sort"
+	"strconv"
 	"time"
 
 	dbMaker "local.packages/game-information/lib/db/master/maker"
 	dbMakerdetail "local.packages/game-information/lib/db/master/makerdetail"
 	dbMakervideo "local.packages/game-information/lib/db/master/makervideo"
+	log "local.packages/game-information/lib/domain/log"
 	domainSpreadsheet "local.packages/game-information/lib/domain/spreadsheet"
 	domainYoutube "local.packages/game-information/lib/domain/youtube"
 )
@@ -22,26 +24,56 @@ type Maker struct {
 }
 
 const spreadsheetName = "maker"
-
-// spreadsheetの値のmapping
-func getSpreadsheetSettings() map[string]int {
-	settings := map[string]int{
-		"id":                 1,
-		"name":               2,
-		"code":               3,
-		"ohp_url":            4,
-		"twitter_name":       5,
-		"youtube_channel_id": 6,
-		"youtube_keywords":   7,
-	}
-	return settings
-}
+const sheetColumnID = 0
+const sheetColumnName = 1
+const sheetColumnCode = 2
+const sheetColumnOHP = 3
+const sheetColumnTwitterName = 4
+const sheetColumnYoutubeChannelID = 5
+const sheetColumnYoutubeKeywords = 6
 
 // spreadsheetからデータを取得するためのrange文字列の生成
 func getSpreadsheetRange() string {
-	settings := getSpreadsheetSettings()
-	endAlphabet := domainSpreadsheet.ConvertColNumberToAlphabet(len(settings))
+	endAlphabet := domainSpreadsheet.ConvertColNumberToAlphabet(sheetColumnYoutubeKeywords + 1)
 	return fmt.Sprintf("%s!A2:%s1000", spreadsheetName, endAlphabet)
+}
+
+// spreadsheetのデータからMakerの構造体を作成する
+func createMakerSchemaFromSpreadsheet(makerID int64, row []interface{}) dbMaker.Schema {
+	return dbMaker.Schema{ID: makerID, Name: row[sheetColumnName].(string), Code: row[sheetColumnCode].(string)}
+}
+
+// spreadsheetのデータからMakerDetailの構造体を作成する
+func createDetailSchemaFromSpreadsheet(makerID int64, row []interface{}) dbMakerdetail.Schema {
+	return dbMakerdetail.Schema{MakerID: makerID, OHP: row[sheetColumnOHP].(string), TwitterName: row[sheetColumnTwitterName].(string), YoutubeChannelID: row[sheetColumnYoutubeChannelID].(string), YoutubeKeywords: row[sheetColumnYoutubeKeywords].(string)}
+}
+
+// Makerのspreadsheetのデータと差分があるか
+func isDiffMaker(schema *dbMaker.Schema, row []interface{}) bool {
+	if schema.Name != row[sheetColumnName].(string) {
+		return true
+	}
+	if schema.Code != row[sheetColumnCode].(string) {
+		return true
+	}
+	return false
+}
+
+// MakerDetailのspreadsheetのデータと差分があるか
+func isDiffDetail(schema *dbMakerdetail.Schema, row []interface{}) bool {
+	if schema.OHP != row[sheetColumnOHP].(string) {
+		return true
+	}
+	if schema.TwitterName != row[sheetColumnTwitterName].(string) {
+		return true
+	}
+	if schema.YoutubeChannelID != row[sheetColumnYoutubeChannelID].(string) {
+		return true
+	}
+	if schema.YoutubeKeywords != row[sheetColumnYoutubeKeywords].(string) {
+		return true
+	}
+	return false
 }
 
 // GetInstance インスタンス生成
@@ -70,13 +102,13 @@ func (domain *Maker) GetDetail(makerID int64) *dbMakerdetail.Schema {
 }
 
 // GetDetailList メーカー情報詳細一覧取得
-func (domain *Maker) GetDetailList(mkaerIDs []int64) *[]dbMakerdetail.Schema {
-	return domain.DBMakerdetail.GetList(mkaerIDs)
+func (domain *Maker) GetDetailList(makerIDs []int64) *[]dbMakerdetail.Schema {
+	return domain.DBMakerdetail.GetList(makerIDs)
 }
 
 // GetVideoList メーカー動画情報取得
-func (domain *Maker) GetVideoList(mkaerID int64) *[]dbMakervideo.Schema {
-	return domain.DBMakervideo.GetList(mkaerID)
+func (domain *Maker) GetVideoList(makerID int64) *[]dbMakervideo.Schema {
+	return domain.DBMakervideo.GetList(makerID)
 }
 
 // UpdateMaker Maker,MakerDetailの更新
@@ -85,10 +117,68 @@ func (domain *Maker) UpdateMakerList() bool {
 	if res == nil {
 		return false
 	}
-	for _, row := range res.Values {
-		fmt.Printf("%s, %s\n", row[0], row[1])
+
+	var makerIDList []int64
+	makerMapList := map[int64]dbMaker.Schema{}
+	makerList := domain.GetMakerList()
+	for _, tmpMaker := range *makerList {
+		makerIDList = append(makerIDList, tmpMaker.ID)
+		makerMapList[tmpMaker.ID] = tmpMaker
 	}
-	return true
+	detailMapList := map[int64]dbMakerdetail.Schema{}
+	detailList := domain.GetDetailList(makerIDList)
+	for _, tmpDetail := range *detailList {
+		detailMapList[tmpDetail.MakerID] = tmpDetail
+	}
+
+	var insertMakerList []dbMaker.Schema
+	var insertDetailList []dbMakerdetail.Schema
+	dbResult := true
+	for _, row := range res {
+		if row[sheetColumnID] == nil {
+			continue
+		}
+		makerID, makerIDError := strconv.ParseInt(row[sheetColumnID].(string), 10, 64)
+		if makerIDError != nil {
+			continue
+		}
+		makerName := row[sheetColumnName].(string)
+		tmpMaker, existMaker := makerMapList[makerID]
+		tmpDetail, _ := detailMapList[makerID]
+		if !existMaker {
+			insertMakerList = append(insertMakerList, createMakerSchemaFromSpreadsheet(makerID, row))
+			insertDetailList = append(insertDetailList, createDetailSchemaFromSpreadsheet(makerID, row))
+			log.Info(fmt.Sprintf("insert target maker id:%d name:%s", makerID, makerName))
+			continue
+		}
+		if isDiffMaker(&tmpMaker, row) {
+			log.Info(fmt.Sprintf("update target maker id:%d name:%s", makerID, makerName))
+			targetMaker := createMakerSchemaFromSpreadsheet(makerID, row)
+			if !domain.DBMaker.Update(&targetMaker) {
+				dbResult = false
+				log.Error(fmt.Sprintf("update maker error id:%d name:%s", makerID, makerName))
+			}
+		}
+		if isDiffDetail(&tmpDetail, row) {
+			log.Info(fmt.Sprintf("update target maker_detail id:%d name:%s", makerID, makerName))
+			targetDetail := createDetailSchemaFromSpreadsheet(makerID, row)
+			if !domain.DBMakerdetail.Update(&targetDetail) {
+				dbResult = false
+				log.Error(fmt.Sprintf("update maker_detail error id:%d name:%s", makerID, makerName))
+			}
+		}
+	}
+	if len(insertMakerList) > 0 {
+		if !domain.DBMaker.Insert(&insertMakerList) {
+			dbResult = false
+			log.Error("insert maker error")
+		}
+		if !domain.DBMakerdetail.Insert(&insertDetailList) {
+			dbResult = false
+			log.Error("insert maker_detail error")
+		}
+	}
+	return dbResult
 }
 
 // UpdateVideoList 動画情報の更新
