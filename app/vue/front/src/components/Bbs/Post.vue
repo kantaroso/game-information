@@ -36,6 +36,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
+import firestore from '@/lib/firebase/Firestore'
 interface Input {
   name: string | null;
   body: string | null;
@@ -54,6 +55,7 @@ export default class Post extends Vue {
     event.preventDefault()
     console.log(this.input)
     this.$root.$emit('bv::hide::modal', 'modal-post')
+    console.log(firestore)
     // this.$emit('startProcessing')
     // this.$emit('endProcessing')
   }

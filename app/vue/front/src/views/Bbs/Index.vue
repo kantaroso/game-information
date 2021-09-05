@@ -13,8 +13,8 @@
           </b-container>
       </p>
       <p>
-          <b-container>
-              <BbsContent body="投稿テスト" :publishAt="1630741459558" />
+          <b-container v-for="item in bbsThreads" :key="item.id">
+            <p><BbsContent :bbsThread="item" /></p>
           </b-container>
       </p>
       <FrontFooter />
@@ -29,6 +29,9 @@ import FrontFooter from '@/components/Footer.vue'
 import PageTitle from '@/components/Title.vue'
 import BbsContent from '@/components/Bbs/Content.vue'
 import BbsPost from '@/components/Bbs/Post.vue'
+import firestore from '@/lib/firebase/Firestore'
+import { BbsThread } from '@/lib/firestore/Interface'
+import { collection, query, orderBy, getDocs } from 'firebase/firestore'
 @Component({
   components: {
     FrontHeader,
@@ -40,6 +43,7 @@ import BbsPost from '@/components/Bbs/Post.vue'
 })
 export default class Index extends Vue {
   overlay=false
+  bbsThreads: BbsThread[] = []
 
   showOverlay () {
     this.overlay = true
@@ -47,6 +51,26 @@ export default class Index extends Vue {
 
   hideOverlay () {
     this.overlay = false
+  }
+
+  renderError () {
+    console.log('エラー')
+  }
+
+  async mounted () {
+    const q = query(collection(firestore, 'bbs'), orderBy('updated_at', 'desc'))
+    const querySnapshot = await getDocs(q)
+    querySnapshot.forEach((doc) => {
+      const thread = {
+        id: doc.id,
+        title: doc.get('title'),
+        name: doc.get('name'),
+        body: doc.get('body'),
+        updatedAt: doc.get('updated_at'),
+        createdAt: doc.get('created_at')
+      }
+      this.bbsThreads.push(thread)
+    })
   }
 }
 </script>
