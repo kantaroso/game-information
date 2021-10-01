@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { BbsThread } from '@/lib/firestore/Interface'
+import { BbsThread } from '@/lib/interface/bbs'
 
 @Component
 export default class Content extends Vue {

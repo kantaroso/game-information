@@ -1,11 +1,11 @@
 interface BbsThread {
-  id: string;
-  title: string;
-  name: string;
-  body: string;
-  createdAt: number;
-  updatedAt: number;
-}
+    id: string;
+    title: string;
+    name: string;
+    body: string;
+    createdAt: number;
+    updatedAt: number;
+  }
 
 interface BbsResponse {
   id: string;

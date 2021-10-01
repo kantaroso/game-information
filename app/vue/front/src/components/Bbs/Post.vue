@@ -19,6 +19,16 @@
             ></b-form-input>
           </b-form-group>
           <b-form-group
+            label="タイトル"
+            label-for="input-title"
+          >
+            <b-form-input
+              id="input-title"
+              v-model="input.title"
+              required
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
             label="本文"
             label-for="input-body"
           >
@@ -36,10 +46,16 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import firestore from '@/lib/firebase/Firestore'
+import firestore from '@/lib/firebase/firestore'
+import { doc, setDoc } from 'firebase/firestore'
+import { nanoid } from 'nanoid'
+import { BbsThread } from '@/lib/interface/bbs'
+import { toUnderscoreCaseObject } from '@/lib/interface/common'
+
 interface Input {
-  name: string | null;
-  body: string | null;
+  name: string;
+  title: string;
+  body: string;
 }
 @Component
 export default class Post extends Vue {
@@ -48,16 +64,33 @@ export default class Post extends Vue {
 
   input: Input = {
     name: '',
+    title: '',
     body: ''
   }
 
   onSubmit (event: Event) {
     event.preventDefault()
-    console.log(this.input)
+    this.$emit('startProcessing')
     this.$root.$emit('bv::hide::modal', 'modal-post')
-    console.log(firestore)
-    // this.$emit('startProcessing')
-    // this.$emit('endProcessing')
+    const uuid = nanoid()
+    const now = Date.now()
+    const docData: BbsThread = {
+      id: uuid,
+      title: this.input.title,
+      name: this.input.name,
+      body: this.input.body,
+      createdAt: now,
+      updatedAt: now
+    }
+    const promise = setDoc(doc(firestore, 'bbs', uuid), toUnderscoreCaseObject(docData))
+    promise.then(() => {
+      this.input = {
+        name: '',
+        title: '',
+        body: ''
+      }
+      this.$emit('endProcessing')
+    })
   }
 }
 </script>
