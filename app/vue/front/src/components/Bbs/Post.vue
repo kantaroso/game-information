@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { defineComponent, reactive, toRefs } from '@vue/composition-api'
 import firestore from '@/lib/firebase/firestore'
 import { doc, setDoc } from 'firebase/firestore'
 import { nanoid } from 'nanoid'
@@ -57,47 +57,61 @@ interface Input {
   title: string;
   body: string;
 }
-@Component
-export default class Post extends Vue {
-  @Prop({ type: String, required: false })
-  mode!: string
-
-  input: Input = {
-    name: '',
-    title: '',
-    body: ''
-  }
-
-  onSubmit (event: Event) {
-    event.preventDefault()
-    this.$emit('startProcessing')
-    this.$root.$emit('bv::hide::modal', 'modal-post')
-    const uuid = nanoid()
-    const now = Date.now()
-    const docData: BbsThread = {
-      id: uuid,
-      title: this.input.title,
-      name: this.input.name,
-      body: this.input.body,
-      createdAt: now,
-      updatedAt: now
-    }
-    const promise = setDoc(doc(firestore, 'bbs', uuid), toUnderscoreCaseObject(docData))
-    promise.then(() => {
-      this.input = {
-        name: '',
-        title: '',
-        body: ''
-      }
-      this.$emit('endProcessing')
-    }).catch(() => {
-      this.input = {
-        name: '',
-        title: '',
-        body: ''
-      }
-      this.$emit('endProcessing', true)
-    })
-  }
+interface ReactiveData {
+  input: Input;
 }
+export default defineComponent({
+  props: {
+    mode: {
+      type: String,
+      required: false
+    }
+  },
+  setup (_, context) {
+    const state: ReactiveData = reactive({
+      input: {
+        name: '',
+        title: '',
+        body: ''
+      }
+    })
+
+    const onSubmit = (event: Event) => {
+      event.preventDefault()
+      context.emit('startProcessing')
+      context.root.$root.$emit('bv::hide::modal', 'modal-post')
+      const uuid = nanoid()
+      const now = Date.now()
+      const docData: BbsThread = {
+        id: uuid,
+        title: state.input.title,
+        name: state.input.name,
+        body: state.input.body,
+        createdAt: now,
+        updatedAt: now
+      }
+      context.emit('endProcessing')
+      const promise = setDoc(doc(firestore, 'bbs', uuid), toUnderscoreCaseObject(docData))
+      promise.then(() => {
+        state.input = {
+          name: '',
+          title: '',
+          body: ''
+        }
+        context.emit('endProcessing')
+      }).catch(() => {
+        state.input = {
+          name: '',
+          title: '',
+          body: ''
+        }
+        context.emit('endProcessing', true)
+      })
+    }
+    return {
+      ...toRefs(state),
+      onSubmit
+    }
+  }
+})
 </script>

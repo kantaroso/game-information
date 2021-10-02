@@ -22,28 +22,42 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-
-@Component
-export default class Alert extends Vue {
-  dismissSecs = 3
-  dismissCountDownSuccess = 0
-  dismissCountDownError = 0
-
-  countDownChangedSuccess (dismissCountDown: number) {
-    this.dismissCountDownSuccess = dismissCountDown
-  }
-
-  countDownChangedError (dismissCountDown: number) {
-    this.dismissCountDownError = dismissCountDown
-  }
-
-  renderSuccess () {
-    this.dismissCountDownSuccess = this.dismissSecs
-  }
-
-  renderError () {
-    this.dismissCountDownError = this.dismissSecs
-  }
+import { defineComponent, reactive, toRefs } from '@vue/composition-api'
+interface ReactiveData {
+  dismissCountDownSuccess: number;
+  dismissCountDownError: number;
 }
+export default defineComponent({
+  setup () {
+    const dismissSecs = 3
+    const state: ReactiveData = reactive({
+      dismissCountDownSuccess: 0,
+      dismissCountDownError: 0
+    })
+
+    const countDownChangedSuccess = (dismissCountDown: number) => {
+      state.dismissCountDownSuccess = dismissCountDown
+    }
+
+    const countDownChangedError = (dismissCountDown: number) => {
+      state.dismissCountDownError = dismissCountDown
+    }
+
+    const renderSuccess = () => {
+      state.dismissCountDownSuccess = dismissSecs
+    }
+
+    const renderError = () => {
+      state.dismissCountDownError = dismissSecs
+    }
+
+    return {
+      ...toRefs(state),
+      countDownChangedSuccess,
+      countDownChangedError,
+      renderSuccess,
+      renderError
+    }
+  }
+})
 </script>

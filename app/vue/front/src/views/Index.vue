@@ -7,16 +7,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent } from '@vue/composition-api'
 import FrontHeader from '@/components/Header.vue'
 import FrontFooter from '@/components/Footer.vue'
 import PageTitle from '@/components/Title.vue'
-@Component({
+
+export default defineComponent({
   components: {
     FrontHeader,
     FrontFooter,
     PageTitle
   }
 })
-export default class Index extends Vue {}
 </script>
