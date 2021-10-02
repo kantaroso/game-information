@@ -26,21 +26,30 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { defineComponent } from '@vue/composition-api'
 import { BbsThread } from '@/lib/interface/bbs'
 
-@Component
-export default class Content extends Vue {
-  @Prop({ type: Object, required: true })
-  bbsThread!: BbsThread
+export default defineComponent({
+  props: {
+    bbsThread: {
+      type: Object,
+      required: true
+    }
+  },
+  setup () {
+    const getDateString = (timestamp: number): string => {
+      const dt = new Date(timestamp)
+      return dt.getFullYear() + '年' + (dt.getMonth() + 1) + '月' + dt.getDate() + '日 ' + dt.getHours() + '時' + dt.getMinutes() + '分'
+    }
 
-  getDateString (timestamp: number): string {
-    const dt = new Date(timestamp)
-    return dt.getFullYear() + '年' + (dt.getMonth() + 1) + '月' + dt.getDate() + '日 ' + dt.getHours() + '時' + dt.getMinutes() + '分'
-  }
+    const isRenderUpdatedAt = (bbsThread: BbsThread): boolean => {
+      return bbsThread.createdAt !== bbsThread.updatedAt
+    }
 
-  isRenderUpdatedAt (bbsThread: BbsThread): boolean {
-    return bbsThread.createdAt !== bbsThread.updatedAt
+    return {
+      getDateString,
+      isRenderUpdatedAt
+    }
   }
-}
+})
 </script>

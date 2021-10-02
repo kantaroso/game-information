@@ -2,7 +2,7 @@
   <div class="index">
     <b-overlay :show="overlay" rounded="sm">
       <FrontHeader />
-      <Alert ref="alert"/>
+      <Alert ref="alertElement"/>
       <PageTitle title="掲示板"/>
       <p>
         <b-container>
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent, reactive, toRefs, onMounted } from '@vue/composition-api'
 import FrontHeader from '@/components/Header.vue'
 import FrontFooter from '@/components/Footer.vue'
 import PageTitle from '@/components/Title.vue'
@@ -35,7 +35,12 @@ import firestore from '@/lib/firebase/firestore'
 import { BbsThread } from '@/lib/interface/bbs'
 import { collection, query, orderBy, getDocs } from 'firebase/firestore'
 import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
-@Component({
+interface ReactiveData {
+  overlay: boolean;
+  bbsThreads: BbsThread[];
+  alertElement: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+export default defineComponent({
   components: {
     FrontHeader,
     FrontFooter,
@@ -43,68 +48,73 @@ import { getAuth, signInAnonymously, onAuthStateChanged } from 'firebase/auth'
     BbsContent,
     BbsPost,
     Alert
-  }
-})
-export default class Index extends Vue {
-  overlay = false
-  bbsThreads: BbsThread[] = []
-  query = query(collection(firestore, 'bbs'), orderBy('updated_at', 'desc'))
+  },
+  setup () {
+    const state: ReactiveData = reactive({
+      overlay: false,
+      bbsThreads: [],
+      alertElement: null
+    })
+    const getBbsQuery = query(collection(firestore, 'bbs'), orderBy('updated_at', 'desc'))
 
-  postStart () {
-    this.overlay = true
-  }
+    const renderBbs = async () => {
+      state.bbsThreads = []
+      const querySnapshot = await getDocs(getBbsQuery)
+      querySnapshot.forEach((doc) => {
+        const thread = {
+          id: doc.id,
+          title: doc.get('title'),
+          name: doc.get('name'),
+          body: doc.get('body'),
+          updatedAt: doc.get('updated_at'),
+          createdAt: doc.get('created_at')
+        }
+        state.bbsThreads.push(thread)
+      })
+    }
 
-  async postEnd (isError: boolean) {
-    this.overlay = false
-    const myAlert = this.$refs.alert as Alert
-    if (isError) {
-      myAlert.renderError()
-    } else {
-      myAlert.renderSuccess()
-      await this.renderBbs()
+    const postStart = () => {
+      state.overlay = true
+    }
+
+    const postEnd = async (isError: boolean) => {
+      console.log('postEnd')
+      state.overlay = false
+      if (isError) {
+        state.alertElement.renderError()
+      } else {
+        state.alertElement.renderSuccess()
+        await renderBbs()
+      }
+    }
+
+    onMounted(async () => {
+      await renderBbs()
+      const auth = getAuth()
+      signInAnonymously(auth)
+        .then(() => {
+          // Signed in..
+        })
+        .catch((error) => {
+          // const errorCode = error.code
+          const errorMessage = error.message
+          alert(errorMessage)
+        })
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/firebase.User
+          // const uid = user.uid
+          // console.log(uid)
+        }
+      })
+    })
+
+    return {
+      ...toRefs(state),
+      postStart,
+      postEnd
     }
   }
-
-  renderError () {
-    console.log('エラー')
-  }
-
-  async renderBbs () {
-    this.bbsThreads = []
-    const querySnapshot = await getDocs(this.query)
-    querySnapshot.forEach((doc) => {
-      const thread = {
-        id: doc.id,
-        title: doc.get('title'),
-        name: doc.get('name'),
-        body: doc.get('body'),
-        updatedAt: doc.get('updated_at'),
-        createdAt: doc.get('created_at')
-      }
-      this.bbsThreads.push(thread)
-    })
-  }
-
-  async mounted () {
-    await this.renderBbs()
-    const auth = getAuth()
-    signInAnonymously(auth)
-      .then(() => {
-        // Signed in..
-      })
-      .catch((error) => {
-        // const errorCode = error.code
-        const errorMessage = error.message
-        alert(errorMessage)
-      })
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        // const uid = user.uid
-        // console.log(uid)
-      }
-    })
-  }
-}
+})
 </script>

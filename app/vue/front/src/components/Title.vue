@@ -3,10 +3,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
-@Component
-export default class Title extends Vue {
-  @Prop({ type: String, required: true })
-  title!: string
-}
+import { defineComponent } from '@vue/composition-api'
+export default defineComponent({
+  props: {
+    title: {
+      type: String,
+      required: true
+    }
+  }
+})
 </script>

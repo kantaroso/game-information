@@ -26,20 +26,30 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent, reactive, toRefs, onMounted } from '@vue/composition-api'
 import axios from 'axios'
-
-@Component
-export default class Header extends Vue {
-  pv = '-'
-  mounted () {
-    axios.get(`${process.env.VUE_APP_API_ORIGIN}/common/pv`).then(
-      res => {
-        this.pv = String(res.data.pv)
-      }
-    ).catch(
-      error => console.log(error)
-    )
-  }
+interface ReactiveData {
+  pv: string;
 }
+export default defineComponent({
+  setup () {
+    const state: ReactiveData = reactive({
+      pv: '-'
+    })
+
+    onMounted(() => {
+      axios.get(`${process.env.VUE_APP_API_ORIGIN}/common/pv`).then(
+        res => {
+          state.pv = String(res.data.pv)
+        }
+      ).catch(
+        error => console.log(error)
+      )
+    })
+
+    return {
+      ...toRefs(state)
+    }
+  }
+})
 </script>

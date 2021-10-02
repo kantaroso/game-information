@@ -68,7 +68,7 @@
       <b-spinner label="Loading..."></b-spinner>
     </p>
     <b-modal
-      ref="movie-play-modal"
+      ref="moviePlayModal"
       ok-only
       ok-title="閉じる"
       size="xl"
@@ -88,7 +88,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { defineComponent, reactive, toRefs, onMounted } from '@vue/composition-api'
 import FrontHeader from '@/components/Header.vue'
 import FrontFooter from '@/components/Footer.vue'
 import PageTitle from '@/components/Title.vue'
@@ -101,71 +101,89 @@ interface SpritVideo {
   index: number;
   videos: Array<ResponseVideo>;
 }
-@Component({
+interface ReactiveData {
+  info: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  splitVideos: Array<SpritVideo>;
+  moviePlayModal: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  modelVideoID: string;
+}
+export default defineComponent({
   components: {
     FrontHeader,
     FrontFooter,
     PageTitle
+  },
+  setup (_, context) {
+    const videoColumnNumber = 2
+    const code = context.root.$route.params.path
+    const state: ReactiveData = reactive({
+      info: null,
+      splitVideos: [],
+      moviePlayModal: null,
+      modelVideoID: ''
+    })
+
+    const showModal = (id: string) => {
+      state.modelVideoID = id
+      state.moviePlayModal.show()
+    }
+
+    const hideModal = () => {
+      state.moviePlayModal.hide()
+    }
+
+    const render = () => {
+      axios
+        .get(`${process.env.VUE_APP_API_ORIGIN}/maker/detail/${code}`, {
+          timeout: 5000
+        })
+        .then((res) => {
+          state.info = res.data
+          const twitterScript = document.createElement('script')
+          twitterScript.setAttribute(
+            'src',
+            'https://platform.twitter.com/widgets.js'
+          )
+          twitterScript.setAttribute('async', 'async')
+          document.head.appendChild(twitterScript)
+        })
+        .catch(() => {
+          alert('メーカーデータの取得に失敗しました')
+        })
+      axios
+        .get(`${process.env.VUE_APP_API_ORIGIN}/maker/videos/${code}`, {
+          timeout: 5000
+        })
+        .then((res) => {
+          const tmp: Array<SpritVideo> = []
+          res.data.forEach((element: ResponseVideo, index: number) => {
+            const key = Math.floor(index / videoColumnNumber)
+            if (!tmp[key]) {
+              tmp[key] = {
+                index: key,
+                videos: []
+              }
+            }
+            tmp[key].videos.push(element)
+          })
+          state.splitVideos = tmp
+        })
+        .catch(() => {
+          alert('メーカー動画データの取得に失敗しました')
+        })
+    }
+
+    onMounted(() => {
+      render()
+    })
+
+    return {
+      ...toRefs(state),
+      showModal,
+      hideModal
+    }
   }
 })
-export default class Index extends Vue {
-  videoColumnNumber = 2;
-  info = null;
-  splitVideos: Array<SpritVideo> = [];
-  code = this.$route.params.path;
-  moviePlayModal: any; // eslint-disable-line @typescript-eslint/no-explicit-any
-  modelVideoID = '';
-  showModal (id: string) {
-    this.modelVideoID = id
-    this.moviePlayModal.show()
-  }
-
-  hideModal () {
-    this.moviePlayModal.hide()
-  }
-
-  mounted () {
-    this.moviePlayModal = this.$refs['movie-play-modal']
-    axios
-      .get(`${process.env.VUE_APP_API_ORIGIN}/maker/detail/${this.code}`, {
-        timeout: 5000
-      })
-      .then((res) => {
-        this.info = res.data
-        const twitterScript = document.createElement('script')
-        twitterScript.setAttribute(
-          'src',
-          'https://platform.twitter.com/widgets.js'
-        )
-        twitterScript.setAttribute('async', 'async')
-        document.head.appendChild(twitterScript)
-      })
-      .catch(() => {
-        alert('メーカーデータの取得に失敗しました')
-      })
-    axios
-      .get(`${process.env.VUE_APP_API_ORIGIN}/maker/videos/${this.code}`, {
-        timeout: 5000
-      })
-      .then((res) => {
-        const tmp: Array<SpritVideo> = []
-        res.data.forEach((element: ResponseVideo, index: number) => {
-          const key = Math.floor(index / this.videoColumnNumber)
-          if (!tmp[key]) {
-            tmp[key] = {
-              index: key,
-              videos: []
-            }
-          }
-          tmp[key].videos.push(element)
-        })
-        this.splitVideos = tmp
-      })
-      .catch(() => {
-        alert('メーカー動画データの取得に失敗しました')
-      })
-  }
-}
 </script>
 
 <style>
