@@ -6,11 +6,13 @@
       <h2>データなし</h2>
     </div>
     <div v-else-if="items">
-      <b-list-group v-for="item in items" :key="item.code">
-        <b-list-group-item>
-          <b-link :href="`/maker/detail/${item.code}`">{{item.name}}</b-link>
-        </b-list-group-item>
-      </b-list-group>
+      <b-container>
+        <b-list-group v-for="item in items" :key="item.code">
+          <b-list-group-item>
+            <b-link :href="`/maker/detail/${item.code}`">{{item.name}}</b-link>
+          </b-list-group-item>
+        </b-list-group>
+      </b-container>
     </div>
     <div v-else>
       <h2><b-spinner label="Loading..."></b-spinner></h2>

@@ -20,6 +20,11 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/Maker/Detail.vue')
   },
   {
+    path: '/bbs',
+    name: 'Bbs',
+    component: () => import('../views/Bbs/Index.vue')
+  },
+  {
     path: '*',
     name: 'NotFound',
     component: () => import('../views/NotFound.vue')

@@ -16,7 +16,7 @@
                 <b-collapse id="navbar-toggle-collapse" is-nav>
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item href="/maker/list">メーカー一覧</b-nav-item>
-                    <b-nav-item href="#">メニュー2</b-nav-item>
+                    <b-nav-item href="/bbs">掲示板</b-nav-item>
                     <b-nav-item href="#">メニュー3</b-nav-item>
                 </b-navbar-nav>
                 </b-collapse>

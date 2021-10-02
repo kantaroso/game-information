@@ -4,5 +4,7 @@
 /app/gin/assets/credentials/secret.json
 /app/gin/main
 /app/gin/cmd
+/app/vue/front/.env.development
+/app/vue/front/.env.production
 /game-information.code-workspace
 /infra/docker-compose/app.env
