@@ -90,6 +90,13 @@ export default class Post extends Vue {
         body: ''
       }
       this.$emit('endProcessing')
+    }).catch(() => {
+      this.input = {
+        name: '',
+        title: '',
+        body: ''
+      }
+      this.$emit('endProcessing', true)
     })
   }
 }

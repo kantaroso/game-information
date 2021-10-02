@@ -54,11 +54,15 @@ export default class Index extends Vue {
     this.overlay = true
   }
 
-  async postEnd () {
+  async postEnd (isError: boolean) {
     this.overlay = false
     const myAlert = this.$refs.alert as Alert
-    myAlert.renderSuccess()
-    await this.renderBbs()
+    if (isError) {
+      myAlert.renderError()
+    } else {
+      myAlert.renderSuccess()
+      await this.renderBbs()
+    }
   }
 
   renderError () {
