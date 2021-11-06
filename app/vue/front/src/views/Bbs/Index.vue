@@ -78,7 +78,6 @@ export default defineComponent({
     }
 
     const postEnd = async (isError: boolean) => {
-      console.log('postEnd')
       state.overlay = false
       if (isError) {
         state.alertElement.renderError()
