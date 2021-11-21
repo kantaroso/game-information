@@ -29,7 +29,6 @@
 import { defineComponent, reactive, toRefs, onMounted } from '@vue/composition-api'
 import axios from 'axios'
 import cloudmessaging from '@/lib/firebase/cloudmessaging'
-import { onMessage } from 'firebase/messaging'
 interface ReactiveData {
   pv: string;
 }
@@ -49,9 +48,8 @@ export default defineComponent({
       )
     })
 
-    onMessage(cloudmessaging, (payload) => {
-      console.log('Received foreground message ', payload)
-    })
+    cloudmessaging.getToken()
+    cloudmessaging.watchForegroudMessage()
 
     return {
       ...toRefs(state)

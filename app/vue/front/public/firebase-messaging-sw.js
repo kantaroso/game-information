@@ -43,17 +43,11 @@ const messaging = firebase.messaging();
 // For more info see:
 // https://firebase.google.com/docs/cloud-messaging/concept-options
 messaging.onBackgroundMessage(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-  // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: '/favicon.ico'
+    icon: '/favicon.ico',
+    tag: payload.notification.title
   };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
-});
-
-self.addEventListener('message', event =>  {
-  console.log(event);
+  // self.registration.showNotification(notificationTitle, notificationOptions);
 });
