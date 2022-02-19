@@ -1,3 +1,3 @@
 module local.packages/game-information/lib/db/master
 
-go 1.13
+go 1.17
