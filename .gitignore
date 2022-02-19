@@ -3,6 +3,7 @@
 /infra/data/mysql
 /app/gin/assets/credentials/secret.json
 /app/gin/main
+/app/gin/tmp/main
 /app/gin/cmd
 /app/vue/front/.env.development
 /app/vue/front/.env.production

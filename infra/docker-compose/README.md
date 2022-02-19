@@ -15,10 +15,11 @@ npm run serve
 
 ## api
 ```shell
+# コンテナログ確認
+docker-compose -f infra/docker-compose/docker-compose.yml logs -f go
+
 # コンテナ ログイン
 docker exec -it api /bin/sh
-# サービス起動
-go run main.go
 # テスト実行
 go test -cover local.packages/game-information/lib/domain/...
 

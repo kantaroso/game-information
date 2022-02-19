@@ -63,10 +63,10 @@ func ConvertColNumberToAlphabet(col int) string {
 	x := int((col - 1) / 26)
 	y := col - (x * 26)
 	if x > 0 {
-		colName = string(x + 64)
+		colName = string(rune(x + 64))
 	}
 	if y > 0 {
-		colName = colName + string(y+64)
+		colName = colName + string(rune(y+64))
 	}
 	return colName
 }
