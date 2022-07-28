@@ -19,6 +19,12 @@ func main() {
 	router.GET("/maker/list", func(c *gin.Context) { controllers.GetMakerList(c) })
 	router.GET("/maker/detail/:path", func(c *gin.Context) { controllers.GetMakerInfo(c) })
 	router.GET("/maker/videos/:path", func(c *gin.Context) { controllers.GetMakerVideos(c) })
+	// テスト用
+	router.GET("/debug304", func(c *gin.Context) { controllers.Debug304(c) })
+	router.GET("/debug403", func(c *gin.Context) { controllers.Debug403(c) })
+	router.GET("/debug500", func(c *gin.Context) { controllers.Debug500(c) })
+	router.GET("/common/pv_nocache", func(c *gin.Context) { controllers.Pv(c) })
+	router.GET("/common/pv_cachepurge", func(c *gin.Context) { controllers.Pv(c) })
 
 	router.Run(":8080")
 }

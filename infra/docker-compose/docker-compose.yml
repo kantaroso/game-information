@@ -25,6 +25,7 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
+    tty: true
     volumes:
       - ../data/mysql:/var/lib/mysql
     environment:
@@ -33,6 +34,7 @@ services:
   phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin/phpmyadmin
+    tty: true
     environment:
       - PMA_ARBITRARY=1
       - PMA_HOST=mysql
@@ -40,3 +42,17 @@ services:
       - PMA_PASSWORD=password
     ports:
       - 8080:80
+
+  varnish:
+    container_name: varnish
+    image: varnish:6.6.1-alpine
+    ports:
+      - 8070:80
+    volumes:
+      - "../varnish/development/default.vcl:/etc/varnish/default.vcl"
+    tmpfs:
+      - /var/lib/varnish:exec
+    environment:
+      - VARNISH_SIZE=100M
+      - VARNISH_TTL=600
+    command: "-p default_keep=300"
