@@ -14,5 +14,6 @@ build-docker-go-dev:
 	docker push kantaroso/game-information-go-dev:latest
 build-vue-assets-prod:
 	docker-compose -f ./infra/docker-compose/docker-compose.yml run --rm vue npm run build
-build-go-main:
-	docker-compose -f ./infra/docker-compose/docker-compose.yml run --rm go go build main.go
+up-go-main-prod:
+	docker build -f ./infra/docker/go/gin/prod/Dockerfile -t kantaroso/game-information-go-prod .
+	docker run --rm -p 80:80 kantaroso/game-information-go-prod

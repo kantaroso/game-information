@@ -41,6 +41,13 @@ firebase hosting:disable
 ```
 
 ## バックエンド
+https://dashboard.render.com/
+
+コンソール側でデプロイ
+
+
+<details>
+<summary>old</summary>
 
 ### リリース用ファイル生成
 * [こちら](infra/docker-compose/README.md##api)
@@ -83,3 +90,6 @@ ibmcloud cf stop gameinfomation
 sh infra/docker-compose/deploy/filter_api_path.sh
 vi infra/docker-compose/deploy/docker-compose.yml
 ```
+</details>
+
+
