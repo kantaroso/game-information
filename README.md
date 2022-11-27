@@ -60,3 +60,7 @@ go run cmd.go makepage
 # youtubeからのデータ取得
 go run cmd.go makevideo
 ```
+
+## 利用サービス
+* フロントエンド：firebase hosting
+* バックエンド：render web service
