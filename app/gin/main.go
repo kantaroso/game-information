@@ -26,5 +26,5 @@ func main() {
 	router.GET("/common/pv_nocache", func(c *gin.Context) { controllers.Pv(c) })
 	router.GET("/common/pv_cachepurge", func(c *gin.Context) { controllers.Pv(c) })
 
-	router.Run(":8080")
+	router.Run(":80")
 }

@@ -7,7 +7,7 @@ services:
     volumes:
       - ../../app/gin:/go/src/game-information
     ports:
-      - 80:8080
+      - 80:80
     env_file:
       - app.env
     working_dir: /go/src/game-information

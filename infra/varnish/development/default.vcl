@@ -7,7 +7,7 @@ import std;
 
 backend default {
     .host = "go";
-    .port = "8080";
+    .port = "80";
     .max_connections = 100;
     .probe = {
         # .url = "/health";
