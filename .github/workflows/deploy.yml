@@ -6,6 +6,12 @@ jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout branch
+        uses: actions/checkout@v2
+      - name: cd workspace
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p ./tmp/cache/docker
       - name : build
         run : make build-vue-assets-prod
       - name : deploy
