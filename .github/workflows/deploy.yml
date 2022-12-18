@@ -1,24 +1,9 @@
 name: deploy
-on:
-  workflow_dispatch:
-    inputs:
-      backend:
-        description: 'backend release'
-        default: false
-        type: boolean
-      frontend:
-        description: 'frontend release'
-        required: false
-        type: boolean
+on: [workflow_dispatch]
 jobs:
-  deploy-backend:
-    if: ${{ inputs.backend }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo ${{ secrets.RENDER_DEPLOY_URL_PROD }}
   deploy-frontend:
-    if: ${{ !failure() && inputs.frontend }}
-    needs: deploy-backend
     runs-on: ubuntu-latest
     steps:
-      - run: echo "deploy-frontend"
+      run : |
+        make build-vue-assets-prod
+        docker-compose -f infra/docker-compose/deploy/docker-compose.yml --rm deploy-frontend firebase deploy --only hosting --token $FIREBASE_TOKEN
