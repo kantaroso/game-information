@@ -12,9 +12,11 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
           mkdir -p ./tmp/cache/docker
-      - name : setup
+      - name : build
+        # 環境変数渡すためにdockerで直接実行
         run : |
           docker run \
+          --rm \
           -v $(pwd)/app/vue/front:/src/app \
           -w /src/app \
           --name front-build-ci \
@@ -31,12 +33,6 @@ jobs:
           -e VUE_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.VUE_APP_FIREBASE_MEASUREMENT_ID }} \
           -e VUE_APP_FIREBASE_CLOUD_MESSAGING_VAPIKEY=${{ secrets.VUE_APP_FIREBASE_CLOUD_MESSAGING_VAPIKEY }} \
           kantaroso/game-information-vue-base:latest \
-          npm install
-      - name : build
-        # 環境変数渡すためにdockerで直接実行
-        run : |
-          docker exec \
-          front-build-ci \
-          npm run build
+          sh -c 'npm install && npm run build'
 #      - name : deploy
 #        run : docker-compose -f infra/docker-compose/deploy/docker-compose.yml --rm deploy-frontend firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
