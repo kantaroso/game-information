@@ -15,7 +15,7 @@ jobs:
     if: ${{ inputs.backend }}
     runs-on: ubuntu-latest
     steps:
-      - run: echoo "deploy-backend"
+      - run: echo ${{ secrets.RENDER_DEPLOY_URL_PROD }}
   deploy-frontend:
     if: ${{ !failure() && inputs.frontend }}
     needs: deploy-backend
