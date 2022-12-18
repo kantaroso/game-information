@@ -7,14 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: cd workspace
         run: |
           cd ${GITHUB_WORKSPACE}
           mkdir -p ./tmp/cache/docker
       - name: cache docker image
         id: docker_image_cache_id
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./tmp/cache/docker
           key: ${{ runner.os }}-${GITHUB_REPOSITORY}-${{hashFiles('./infra/docker/go/gin/dev/Dockerfile')}}-v1
@@ -28,7 +28,7 @@ jobs:
         run: docker load -i ./tmp/cache/docker/snapshot.tar
       - name: cache gomod
         id: gomod_cache_id
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ./tmp/cache/gomod
           key: ${{ runner.os }}-${GITHUB_REPOSITORY}-gomod

@@ -1,0 +1,48 @@
+name: deploy
+
+on: [workflow_dispatch]
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: cd workspace
+        run: |
+          cd ${GITHUB_WORKSPACE}
+          mkdir -p ./tmp/cache/docker
+      - name: cache docker image
+        id: docker_image_cache_id_vue_base
+        uses: actions/cache@v3
+        with:
+          path: ./tmp/cache/docker
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-${{hashFiles('./infra/docker/vue/base/Dockerfile')}}-v1
+      - name: save docker image
+        if: steps.docker_image_cache_id_vue_base.outputs.cache-hit != 'true'
+        run: |
+          docker pull kantaroso/game-information-vue-base:latest
+          docker save kantaroso/game-information-vue-base:latest > ./tmp/cache/docker/snapshot.tar
+      - name : build
+        # 環境変数渡すためにdockerで直接実行
+        run : |
+          docker run \
+          --rm \
+          -v $(pwd)/app/vue/front:/src/app \
+          -w /src/app \
+          -e NODE_ENV='production' \
+          -e VUE_APP_ASSETS_ORIGIN='/' \
+          -e VUE_APP_API_ORIGIN=${{ secrets.VUE_APP_API_ORIGIN }} \
+          -e VUE_APP_TITLE=${{ secrets.VUE_APP_TITLE }} \
+          -e VUE_APP_FIREBASE_API_KEY=${{ secrets.VUE_APP_FIREBASE_API_KEY }} \
+          -e VUE_APP_FIREBASE_AUTH_DOMAIN=${{ secrets.VUE_APP_FIREBASE_AUTH_DOMAIN }} \
+          -e VUE_APP_FIREBASE_PROJECT_ID=${{ secrets.VUE_APP_FIREBASE_PROJECT_ID }} \
+          -e VUE_APP_FIREBASE_STORAGE_BUCKET=${{ secrets.VUE_APP_FIREBASE_STORAGE_BUCKET }} \
+          -e VUE_APP_FIREBASE_MESSAGING_SENDER_ID=${{ secrets.VUE_APP_FIREBASE_MESSAGING_SENDER_ID }} \
+          -e VUE_APP_FIREBASE_APP_ID=${{ secrets.VUE_APP_FIREBASE_APP_ID }} \
+          -e VUE_APP_FIREBASE_MEASUREMENT_ID=${{ secrets.VUE_APP_FIREBASE_MEASUREMENT_ID }} \
+          -e VUE_APP_FIREBASE_CLOUD_MESSAGING_VAPIKEY=${{ secrets.VUE_APP_FIREBASE_CLOUD_MESSAGING_VAPIKEY }} \
+          kantaroso/game-information-vue-base:latest \
+          /bin/sh -c 'npm install && npm run build'
+#      - name : deploy
+#        run : docker-compose -f infra/docker-compose/deploy/docker-compose.yml --rm deploy-frontend firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
