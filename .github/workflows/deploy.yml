@@ -1,9 +1,12 @@
 name: deploy
+
 on: [workflow_dispatch]
+
 jobs:
   deploy-frontend:
     runs-on: ubuntu-latest
     steps:
-      run : |
-        make build-vue-assets-prod
-        docker-compose -f infra/docker-compose/deploy/docker-compose.yml --rm deploy-frontend firebase deploy --only hosting --token $FIREBASE_TOKEN
+      - name : build
+        run : make build-vue-assets-prod
+      - name : deploy
+        run : docker-compose -f infra/docker-compose/deploy/docker-compose.yml --rm deploy-frontend firebase deploy --only hosting --token $FIREBASE_TOKEN
