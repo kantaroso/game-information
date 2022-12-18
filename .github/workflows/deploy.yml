@@ -12,6 +12,17 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}
           mkdir -p ./tmp/cache/docker
+      - name: cache docker image
+        id: docker_image_cache_id_vue_base
+        uses: actions/cache@v2
+        with:
+          path: ./tmp/cache/docker
+          key: ${{ runner.os }}-${GITHUB_REPOSITORY}-${{hashFiles('./infra/docker/vue/base/Dockerfile')}}-v1
+      - name: save docker image
+        if: steps.docker_image_cache_id_vue_base.outputs.cache-hit != 'true'
+        run: |
+          docker pull kantaroso/game-information-vue-base:latest
+          docker save kantaroso/game-information-vue-base:latest > ./tmp/cache/docker/snapshot.tar
       - name : build
         # 環境変数渡すためにdockerで直接実行
         run : |
