@@ -64,5 +64,3 @@ go run cmd.go makevideo
 ## 利用サービス
 * フロントエンド：firebase hosting
 * バックエンド：render web service
-
-## test
