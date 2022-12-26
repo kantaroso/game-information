@@ -4,6 +4,8 @@ on: [push]
 
 jobs:
   golang-test:
+    environment:
+      name: prod-env
     runs-on: ubuntu-latest
     steps:
       - name: checkout branch
