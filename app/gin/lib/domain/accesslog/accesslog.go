@@ -3,7 +3,7 @@ package accesslog
 import (
 	"net/http"
 
-	dbAccesslog "local.packages/game-information/lib/db/analysis/accesslog"
+	dbAccesslog "game-information/lib/db/analysis/accesslog"
 )
 
 // Accesslog インスタンス

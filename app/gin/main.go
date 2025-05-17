@@ -7,7 +7,7 @@ import (
 
 	// controller の 処理はモジュール化
 	// https://qiita.com/tkj06/items/a5f79417935100045650
-	"local.packages/game-information/controllers"
+	"game-information/controllers"
 )
 
 func main() {

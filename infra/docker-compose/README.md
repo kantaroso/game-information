@@ -10,6 +10,8 @@ docker-compose -f infra/docker-compose/docker-compose.yml up -d
 # vue起動
 # docker にログイン
 docker exec -it front /bin/sh
+# 初回のみ
+# npm install
 npm run serve
 ```
 
@@ -21,17 +23,18 @@ docker-compose -f infra/docker-compose/docker-compose.yml logs -f go
 # コンテナ ログイン
 docker exec -it api /bin/sh
 # テスト実行
-go test -cover local.packages/game-information/lib/domain/...
+go test -cover game-information/lib/domain/...
 
 # cli
-## youtubeの動画データを更新する ※引数指定で特定のゲームだけ更新可能
-go run cmd.go makevideo
-go run cmd.go makevideo august
-## pagedataのキャッシュを生成する
-go run cmd.go makepage
 ## スプレッドシートからゲーム情報を登録する
 go run cmd.go makemaster maker
 
+## youtubeの動画データを更新する ※引数指定で特定のゲームだけ更新可能
+go run cmd.go makevideo
+go run cmd.go makevideo august
+
+## pagedataのキャッシュを生成する
+go run cmd.go makepage
 ```
 
 ## 初回構築手順

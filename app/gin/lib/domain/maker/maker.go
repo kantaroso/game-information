@@ -6,12 +6,12 @@ import (
 	"strconv"
 	"time"
 
-	dbMaker "local.packages/game-information/lib/db/master/maker"
-	dbMakerdetail "local.packages/game-information/lib/db/master/makerdetail"
-	dbMakervideo "local.packages/game-information/lib/db/master/makervideo"
-	log "local.packages/game-information/lib/domain/log"
-	domainSpreadsheet "local.packages/game-information/lib/domain/spreadsheet"
-	domainYoutube "local.packages/game-information/lib/domain/youtube"
+	dbMaker "game-information/lib/db/master/maker"
+	dbMakerdetail "game-information/lib/db/master/makerdetail"
+	dbMakervideo "game-information/lib/db/master/makervideo"
+	log "game-information/lib/domain/log"
+	domainSpreadsheet "game-information/lib/domain/spreadsheet"
+	domainYoutube "game-information/lib/domain/youtube"
 )
 
 // Maker インスタンス
@@ -148,34 +148,34 @@ func (domain *Maker) UpdateMakerList() bool {
 		if !existMaker {
 			insertMakerList = append(insertMakerList, createMakerSchemaFromSpreadsheet(makerID, row))
 			insertDetailList = append(insertDetailList, createDetailSchemaFromSpreadsheet(makerID, row))
-			log.Info(fmt.Sprintf("insert target maker id:%d name:%s", makerID, makerName))
+			log.Info(fmt.Sprintf("insert target maker id:%d name:%s", makerID, makerName), {})
 			continue
 		}
 		if isDiffMaker(&tmpMaker, row) {
-			log.Info(fmt.Sprintf("update target maker id:%d name:%s", makerID, makerName))
+			log.Info(fmt.Sprintf("update target maker id:%d name:%s", makerID, makerName), {})
 			targetMaker := createMakerSchemaFromSpreadsheet(makerID, row)
 			if !domain.DBMaker.Update(&targetMaker) {
 				dbResult = false
-				log.Error(fmt.Sprintf("update maker error id:%d name:%s", makerID, makerName))
+				log.Error(fmt.Sprintf("update maker error id:%d name:%s", makerID, makerName), {})
 			}
 		}
 		if isDiffDetail(&tmpDetail, row) {
-			log.Info(fmt.Sprintf("update target maker_detail id:%d name:%s", makerID, makerName))
+			log.Info(fmt.Sprintf("update target maker_detail id:%d name:%s", makerID, makerName), {})
 			targetDetail := createDetailSchemaFromSpreadsheet(makerID, row)
 			if !domain.DBMakerdetail.Update(&targetDetail) {
 				dbResult = false
-				log.Error(fmt.Sprintf("update maker_detail error id:%d name:%s", makerID, makerName))
+				log.Error(fmt.Sprintf("update maker_detail error id:%d name:%s", makerID, makerName), {})
 			}
 		}
 	}
 	if len(insertMakerList) > 0 {
 		if !domain.DBMaker.Insert(&insertMakerList) {
 			dbResult = false
-			log.Error("insert maker error")
+			log.Error("insert maker error", insertMakerList)
 		}
 		if !domain.DBMakerdetail.Insert(&insertDetailList) {
 			dbResult = false
-			log.Error("insert maker_detail error")
+			log.Error("insert maker_detail error", insertDetailList)
 		}
 	}
 	return dbResult

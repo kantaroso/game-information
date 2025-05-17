@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/gin-gonic/gin"
-	domainAccesslog "local.packages/game-information/lib/domain/accesslog"
+	domainAccesslog "game-information/lib/domain/accesslog"
 )
 
 // Pv トップページの処理

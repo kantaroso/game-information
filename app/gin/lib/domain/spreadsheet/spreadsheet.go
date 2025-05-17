@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/api/option"
 	"google.golang.org/api/sheets/v4"
-	log "local.packages/game-information/lib/domain/log"
+	log "game-information/lib/domain/log"
 )
 
 // InterfaceYoutube インターフェース
@@ -33,7 +33,7 @@ func (domain *Spreadsheet) getService() *sheets.Service {
 	ctx := context.Background()
 	service, err := sheets.NewService(ctx, option.WithCredentialsFile(credentialsFilePath))
 	if err != nil {
-		log.Error(fmt.Sprintf("Error creating new Spreadsheet client: %v", err))
+		log.Error(fmt.Sprintf("Error creating new Spreadsheet client: %v", err), {})
 		return nil
 	}
 	return service
@@ -44,12 +44,12 @@ func (domain *Spreadsheet) GetSheetData(sheetRange string) [][]interface{} {
 	service := domain.getService()
 	res, err := service.Spreadsheets.Values.Get(domain.SheetID, sheetRange).Do()
 	if err != nil {
-		log.Error(fmt.Sprintf("Unable to retrieve data from sheet: %v", err))
+		log.Error(fmt.Sprintf("Unable to retrieve data from sheet: %v", err), {})
 		return nil
 	}
 
 	if len(res.Values) == 0 {
-		log.Info("No data found.")
+		log.Info("No data found.", {})
 		return nil
 	}
 

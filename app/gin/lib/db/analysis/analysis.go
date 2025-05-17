@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	dbConfig "local.packages/game-information/config/database"
-	log "local.packages/game-information/lib/domain/log"
+	dbConfig "game-information/config/database"
+	log "game-information/lib/domain/log"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"
@@ -33,7 +33,7 @@ func getInstance() *Database {
 	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), {})
 		return nil
 	}
 	return &Database{DB: db}

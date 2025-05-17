@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	domainMaker "local.packages/game-information/lib/domain/maker"
+	domainMaker "game-information/lib/domain/maker"
 )
 
 var (

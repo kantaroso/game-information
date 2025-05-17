@@ -10,11 +10,11 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
-	dbMaker "local.packages/game-information/lib/db/master/maker"
-	dbMakerdetail "local.packages/game-information/lib/db/master/makerdetail"
-	dbMakervideo "local.packages/game-information/lib/db/master/makervideo"
-	domainSpreadsheet "local.packages/game-information/lib/domain/spreadsheet"
-	domainYoutube "local.packages/game-information/lib/domain/youtube"
+	dbMaker "game-information/lib/db/master/maker"
+	dbMakerdetail "game-information/lib/db/master/makerdetail"
+	dbMakervideo "game-information/lib/db/master/makervideo"
+	domainSpreadsheet "game-information/lib/domain/spreadsheet"
+	domainYoutube "game-information/lib/domain/youtube"
 )
 
 type DomainYoutubeTest struct {

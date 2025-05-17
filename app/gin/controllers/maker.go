@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"sort"
 
-	domainMaker "local.packages/game-information/lib/domain/maker"
+	domainMaker "game-information/lib/domain/maker"
 
 	"github.com/gin-gonic/gin"
 )
