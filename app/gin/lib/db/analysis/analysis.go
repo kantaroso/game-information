@@ -33,7 +33,7 @@ func getInstance() *Database {
 	connection := fmt.Sprintf(dbConfig.ConnectionOption, config.User, config.Password, config.Host, config.Port, config.Name)
 	db, err := sql.Open("mysql", connection)
 	if err != nil {
-		log.Error(err.Error(), {})
+		log.Error(err.Error(), nil)
 		return nil
 	}
 	return &Database{DB: db}

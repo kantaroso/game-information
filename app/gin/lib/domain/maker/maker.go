@@ -148,23 +148,23 @@ func (domain *Maker) UpdateMakerList() bool {
 		if !existMaker {
 			insertMakerList = append(insertMakerList, createMakerSchemaFromSpreadsheet(makerID, row))
 			insertDetailList = append(insertDetailList, createDetailSchemaFromSpreadsheet(makerID, row))
-			log.Info(fmt.Sprintf("insert target maker id:%d name:%s", makerID, makerName), {})
+			log.Info(fmt.Sprintf("insert target maker id:%d name:%s", makerID, makerName), nil)
 			continue
 		}
 		if isDiffMaker(&tmpMaker, row) {
-			log.Info(fmt.Sprintf("update target maker id:%d name:%s", makerID, makerName), {})
+			log.Info(fmt.Sprintf("update target maker id:%d name:%s", makerID, makerName), nil)
 			targetMaker := createMakerSchemaFromSpreadsheet(makerID, row)
 			if !domain.DBMaker.Update(&targetMaker) {
 				dbResult = false
-				log.Error(fmt.Sprintf("update maker error id:%d name:%s", makerID, makerName), {})
+				log.Error(fmt.Sprintf("update maker error id:%d name:%s", makerID, makerName), nil)
 			}
 		}
 		if isDiffDetail(&tmpDetail, row) {
-			log.Info(fmt.Sprintf("update target maker_detail id:%d name:%s", makerID, makerName), {})
+			log.Info(fmt.Sprintf("update target maker_detail id:%d name:%s", makerID, makerName), nil)
 			targetDetail := createDetailSchemaFromSpreadsheet(makerID, row)
 			if !domain.DBMakerdetail.Update(&targetDetail) {
 				dbResult = false
-				log.Error(fmt.Sprintf("update maker_detail error id:%d name:%s", makerID, makerName), {})
+				log.Error(fmt.Sprintf("update maker_detail error id:%d name:%s", makerID, makerName), nil)
 			}
 		}
 	}

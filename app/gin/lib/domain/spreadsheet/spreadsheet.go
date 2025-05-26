@@ -33,7 +33,7 @@ func (domain *Spreadsheet) getService() *sheets.Service {
 	ctx := context.Background()
 	service, err := sheets.NewService(ctx, option.WithCredentialsFile(credentialsFilePath))
 	if err != nil {
-		log.Error(fmt.Sprintf("Error creating new Spreadsheet client: %v", err), {})
+		log.Error(fmt.Sprintf("Error creating new Spreadsheet client: %v", err), nil)
 		return nil
 	}
 	return service
@@ -44,12 +44,12 @@ func (domain *Spreadsheet) GetSheetData(sheetRange string) [][]interface{} {
 	service := domain.getService()
 	res, err := service.Spreadsheets.Values.Get(domain.SheetID, sheetRange).Do()
 	if err != nil {
-		log.Error(fmt.Sprintf("Unable to retrieve data from sheet: %v", err), {})
+		log.Error(fmt.Sprintf("Unable to retrieve data from sheet: %v", err), nil)
 		return nil
 	}
 
 	if len(res.Values) == 0 {
-		log.Info("No data found.", {})
+		log.Info("No data found.", res)
 		return nil
 	}
 
