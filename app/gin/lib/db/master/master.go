@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	dbConfig "local.packages/game-information/config/database"
+	dbConfig "game-information/config/database"
 
 	// mysql driver
 	_ "github.com/go-sql-driver/mysql"

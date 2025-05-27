@@ -1,6 +1,6 @@
 package main
 
-import "local.packages/game-information/commands"
+import "game-information/commands"
 
 func main() {
 	commands.Run()

@@ -27,7 +27,7 @@ services:
     image: mysql:5.7
     tty: true
     volumes:
-      - ../data/mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=password
 
@@ -56,3 +56,6 @@ services:
       - VARNISH_SIZE=100M
       - VARNISH_TTL=600
     command: "-p default_keep=300"
+
+volumes:
+  mysql_data: # 名前付きボリュームの定義

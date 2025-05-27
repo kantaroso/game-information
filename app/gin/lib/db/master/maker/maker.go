@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	dbInstance "local.packages/game-information/lib/db/master"
-	log "local.packages/game-information/lib/domain/log"
+	dbInstance "game-information/lib/db/master"
+	log "game-information/lib/domain/log"
 )
 
 // Schema table schema [ maker ]
@@ -37,7 +37,7 @@ func (db *Maker) Get(code string) *Schema {
 
 	rows, err := db.DBInstance.Query("select * from maker where code = ?", code)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &Schema{}
 	}
 	defer rows.Close()
@@ -45,14 +45,14 @@ func (db *Maker) Get(code string) *Schema {
 	for rows.Next() {
 		err := rows.Scan(&maker.ID, &maker.Name, &maker.Code, &maker.CreatedAt, &maker.UpdatedAt)
 		if err != nil {
-			log.Error(err.Error())
+			log.Error(err.Error(), nil)
 			return &Schema{}
 		}
 	}
 
 	err = rows.Err()
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &Schema{}
 	}
 
@@ -64,7 +64,7 @@ func (db *Maker) GetList() *[]Schema {
 
 	rows, err := db.DBInstance.Query("select * from maker order by id")
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 	defer rows.Close()
@@ -75,7 +75,7 @@ func (db *Maker) GetList() *[]Schema {
 		maker = Schema{}
 		err := rows.Scan(&maker.ID, &maker.Name, &maker.Code, &maker.CreatedAt, &maker.UpdatedAt)
 		if err != nil {
-			log.Error(err.Error())
+			log.Error(err.Error(), nil)
 			return &[]Schema{}
 		}
 		makers = append(makers, maker)
@@ -83,7 +83,7 @@ func (db *Maker) GetList() *[]Schema {
 
 	err = rows.Err()
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 
@@ -94,7 +94,7 @@ func (db *Maker) GetList() *[]Schema {
 func (db *Maker) Insert(schemas *[]Schema) bool {
 	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return false
 	}
 	return true
@@ -104,7 +104,7 @@ func (db *Maker) Insert(schemas *[]Schema) bool {
 func (db *Maker) Update(schema *Schema) bool {
 	_, err := db.DBInstance.Exec("update maker set name=?, code=?, updated_at=NOW() where id=?", schema.Name, schema.Code, schema.ID)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return false
 	}
 	return true

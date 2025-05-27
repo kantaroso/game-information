@@ -1,4 +1,4 @@
-FROM golang:1.17.7-alpine3.15
+FROM golang:1.24.3-alpine3.21
 
 COPY ./app/gin /var/www
 WORKDIR /var/www

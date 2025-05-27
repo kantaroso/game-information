@@ -6,9 +6,9 @@ import (
 	"strings"
 	"time"
 
-	dbInstance "local.packages/game-information/lib/db/master"
-	log "local.packages/game-information/lib/domain/log"
-	domainYoutube "local.packages/game-information/lib/domain/youtube"
+	dbInstance "game-information/lib/db/master"
+	log "game-information/lib/domain/log"
+	domainYoutube "game-information/lib/domain/youtube"
 )
 
 // Schema table schema [ maker_video ]
@@ -37,7 +37,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
 	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 	defer rows.Close()
@@ -48,7 +48,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 		video = Schema{}
 		err := rows.Scan(&video.ID, &video.MakerID, &video.VideoID, &video.Title, &video.PublishedAt, &video.CreatedAt)
 		if err != nil {
-			log.Error(err.Error())
+			log.Error(err.Error(), nil)
 			return &[]Schema{}
 		}
 		videos = append(videos, video)
@@ -56,7 +56,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
 	err = rows.Err()
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 
@@ -67,7 +67,7 @@ func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) bool {
 	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(makerID, videos))
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return false
 	}
 	return true

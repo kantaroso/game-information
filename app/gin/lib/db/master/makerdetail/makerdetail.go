@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	dbInstance "local.packages/game-information/lib/db/master"
-	log "local.packages/game-information/lib/domain/log"
+	dbInstance "game-information/lib/db/master"
+	log "game-information/lib/domain/log"
 )
 
 // Schema table schema [ maker_detail ]
@@ -43,7 +43,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 
 	rows, err := db.DBInstance.Query(db.CreateSelectQuery(strings.Join(strMakerIDs, ",")))
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 	defer rows.Close()
@@ -54,7 +54,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 		detail = Schema{}
 		err := rows.Scan(&detail.MakerID, &detail.OHP, &detail.TwitterName, &detail.YoutubeChannelID, &detail.YoutubeKeywords, &detail.CreatedAt, &detail.UpdatedAt)
 		if err != nil {
-			log.Error(err.Error())
+			log.Error(err.Error(), nil)
 			return &[]Schema{}
 		}
 		details = append(details, detail)
@@ -62,7 +62,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 
 	err = rows.Err()
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return &[]Schema{}
 	}
 
@@ -73,7 +73,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 func (db *MakerDetail) Insert(schemas *[]Schema) bool {
 	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return false
 	}
 	return true
@@ -83,7 +83,7 @@ func (db *MakerDetail) Insert(schemas *[]Schema) bool {
 func (db *MakerDetail) Update(schema *Schema) bool {
 	_, err := db.DBInstance.Exec("update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=NOW() where maker_id=?", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
 	if err != nil {
-		log.Error(err.Error())
+		log.Error(err.Error(), nil)
 		return false
 	}
 	return true

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"local.packages/game-information/controllers"
+	"game-information/controllers"
 )
 
 var (
