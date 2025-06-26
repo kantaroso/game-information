@@ -56,12 +56,12 @@ func TestRegister(t *testing.T) {
 	var result bool
 
 	// 成功時
-	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnResult(sqlmock.NewResult(1, 1))
 	result = domainAccesslogInstance.Register(r)
 	assert.Equal(t, true, result)
 
 	// エラー時（特になもしない）
-	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error case"))
+	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error case"))
 	result = domainAccesslogInstance.Register(r)
 	assert.Equal(t, false, result)
 

@@ -32,10 +32,10 @@ func GetInstance() *MakerVideo {
 	return &MakerVideo{DBInstance: instance.DB}
 }
 
-// GetList query [ select * from maker_video where maker_id = ? order by id DESC ]
+// GetList query [ select * from maker_video where maker_id = $1 order by id DESC ]
 func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
-	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
+	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = $1 order by id DESC", makerID)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return &[]Schema{}

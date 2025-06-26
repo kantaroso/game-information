@@ -35,7 +35,7 @@ func (db *Maker) Get(code string) *Schema {
 
 	maker := &Schema{}
 
-	rows, err := db.DBInstance.Query("select * from maker where code = ?", code)
+	rows, err := db.DBInstance.Query("select * from maker where code = $1", code)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return &Schema{}
@@ -90,7 +90,7 @@ func (db *Maker) GetList() *[]Schema {
 	return &makers
 }
 
-// Insert [insert into maker(id, name, code, created_at, updated_at) values (?,?,?,?,?)]
+// Insert [insert into maker(id, name, code, created_at, updated_at) values ($1,$2,$3,$4,$5)]
 func (db *Maker) Insert(schemas *[]Schema) bool {
 	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
 	if err != nil {
@@ -100,9 +100,9 @@ func (db *Maker) Insert(schemas *[]Schema) bool {
 	return true
 }
 
-// Update [update maker set name=?, code=?, updated_at=? where id=?]
+// Update [update maker set name=$1, code=$2, updated_at=NOW() where id=$3]
 func (db *Maker) Update(schema *Schema) bool {
-	_, err := db.DBInstance.Exec("update maker set name=?, code=?, updated_at=NOW() where id=?", schema.Name, schema.Code, schema.ID)
+	_, err := db.DBInstance.Exec("update maker set name=$1, code=$2, updated_at=NOW() where id=$3", schema.Name, schema.Code, schema.ID)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return false

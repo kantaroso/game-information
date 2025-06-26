@@ -12,6 +12,19 @@ services:
       - app.env
     working_dir: /go/src/game-information
 
+  go-prod:
+    container_name: api-prod
+    image: golang:1.24.3-alpine3.21
+    tty: true
+    volumes:
+      - ../../app/gin:/go/src/game-information
+    ports:
+      - 80:80
+    env_file:
+      - app.env
+      - app.prod.env
+    working_dir: /go/src/game-information
+
   vue:
     container_name: front
     image: kantaroso/game-information-vue-base:latest
@@ -22,26 +35,28 @@ services:
       - 8090:8080
     working_dir: /var/www/front
 
-  mysql:
-    container_name: mysql
-    image: mysql:5.7
+  postgres:
+    container_name: postgres
+    image: postgres:15
     tty: true
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      - MYSQL_ROOT_PASSWORD=password
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
 
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
     tty: true
     environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - PMA_USER=root
-      - PMA_PASSWORD=password
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=password
     ports:
       - 8080:80
+    depends_on:
+      - postgres
 
   varnish:
     container_name: varnish
@@ -58,4 +73,4 @@ services:
     command: "-p default_keep=300"
 
 volumes:
-  mysql_data: # 名前付きボリュームの定義
+  postgres_data: # 名前付きボリュームの定義

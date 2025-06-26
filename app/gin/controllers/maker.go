@@ -12,9 +12,6 @@ import (
 // -----------------------------------------------
 // GetMakerList メーカー一覧
 func GetMakerList(c *gin.Context) {
-	if renderProduction(c) {
-		return
-	}
 	outjson(c, 200, wrapperGetMakerList())
 }
 
@@ -43,9 +40,6 @@ func MakeMakerListJson() {
 // -----------------------------------------------
 // GetMakerInfo トップページの処理
 func GetMakerInfo(c *gin.Context) {
-	if renderProduction(c) {
-		return
-	}
 	path := c.Param("path")
 	result := wrapperGetMakerInfo(path)
 	if _, exist := result["code"]; !exist {
@@ -87,9 +81,6 @@ func MakeMakerInfoJson() {
 // -----------------------------------------------
 // GetMakerVideos トップページの処理
 func GetMakerVideos(c *gin.Context) {
-	if renderProduction(c) {
-		return
-	}
 	path := c.Param("path")
 	result := wrapperGetMakerVideos(path)
 	if len(result) == 0 {

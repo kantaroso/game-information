@@ -49,11 +49,3 @@ func isProduction() bool {
 	}
 	return false
 }
-
-func renderProduction(c *gin.Context) bool {
-	if !isProduction() {
-		return false
-	}
-	outjsonFromText(c, 200, getJsonFromFile(c.Request.URL.Path))
-	return true
-}

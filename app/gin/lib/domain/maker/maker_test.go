@@ -51,7 +51,7 @@ func TestGetMaker(t *testing.T) {
 
 	var result *dbMaker.Schema
 	var rows *sqlmock.Rows
-	queryStr := "select * from maker where code = ?"
+	queryStr := "select * from maker where code = $1"
 
 	// カラムの要素
 	var id int64 = 1
@@ -276,7 +276,7 @@ func TestGetVideoList(t *testing.T) {
 	var result *[]dbMakervideo.Schema
 	var rows *sqlmock.Rows
 	var makerID int64 = 1000
-	queryStr := "select * from maker_video where maker_id = ? order by id DESC"
+	queryStr := "select * from maker_video where maker_id = $1 order by id DESC"
 	tmpTime := time.Now()
 
 	// カラムの要素
@@ -357,10 +357,10 @@ func TestUpdateMakerList(t *testing.T) {
 
 	// クエリ
 	makerSelectQueryStr := "select * from maker order by id"
-	makerUpdateQueryStr := "update maker set name=?, code=?, updated_at=NOW() where id=?"
+	makerUpdateQueryStr := "update maker set name=$1, code=$2, updated_at=NOW() where id=$3"
 	makerInsertQueryStr := domainMakerInstnce.DBMaker.CreateBulkInsertQuery(&makerInsertSchemas)
 	detailSelectQueryStr := fmt.Sprintf("select * from maker_detail where maker_id IN (%s)", "1,2")
-	detailUpdateQueryStr := "update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=NOW() where maker_id=?"
+	detailUpdateQueryStr := "update maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5"
 	detailInsertQueryStr := domainMakerInstnce.DBMakerdetail.CreateBulkInsertQuery(&detailInsertSchemas)
 
 	// 成功
@@ -429,7 +429,7 @@ func TestUpdateVideoList(t *testing.T) {
 	videoID2 := "video_id_2"
 	title2 := "title_2"
 
-	videoListQueryStr := "select * from maker_video where maker_id = ? order by id DESC"
+	videoListQueryStr := "select * from maker_video where maker_id = $1 order by id DESC"
 	videoInsertQuery := domainMakerInstnce.DBMakervideo.CreateBulkInsertQuery(makerID, getTestYoutubeData(youtubeChannelID))
 
 	// youtubeAPI mock

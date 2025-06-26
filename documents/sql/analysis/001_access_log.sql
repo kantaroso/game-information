@@ -1,10 +1,9 @@
-CREATE TABLE `access_log` (
-  `id` bigint AUTO_INCREMENT NOT NULL,
-  `method` varchar(255) NOT NULL,
-  `endpoint` varchar(255) NOT NULL,
-  `query_string` text NOT NULL,
-  `user_agent` varchar(255) NOT NULL,
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  PRIMARY KEY (id)
-)
+CREATE TABLE analysis.access_log (
+  id BIGSERIAL PRIMARY KEY, -- bigint AUTO_INCREMENT NOT NULL は PostgreSQLでは BIGSERIAL または GENERATED ALWAYS AS IDENTITY が一般的です
+  method VARCHAR(255) NOT NULL,
+  endpoint VARCHAR(255) NOT NULL,
+  query_string TEXT NOT NULL,
+  user_agent VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL, -- TIMESTAMP WITH TIME ZONE を推奨
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL -- MySQLの ON UPDATE CURRENT_TIMESTAMP はトリガーで実現します
+);

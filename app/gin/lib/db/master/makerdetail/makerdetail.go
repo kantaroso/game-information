@@ -40,6 +40,9 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 	for _, v := range makerIDs {
 		strMakerIDs = append(strMakerIDs, strconv.FormatInt(v, 10))
 	}
+	if len(strMakerIDs) == 0 {
+		return &[]Schema{}
+	}
 
 	rows, err := db.DBInstance.Query(db.CreateSelectQuery(strings.Join(strMakerIDs, ",")))
 	if err != nil {
@@ -79,9 +82,9 @@ func (db *MakerDetail) Insert(schemas *[]Schema) bool {
 	return true
 }
 
-// Update [update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=? where maker_id=?]
+// Update [update maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5]
 func (db *MakerDetail) Update(schema *Schema) bool {
-	_, err := db.DBInstance.Exec("update maker_detail set ohp_url=?, twitter_name=?, youtube_channel_id=?, youtube_keywords=?, updated_at=NOW() where maker_id=?", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
+	_, err := db.DBInstance.Exec("update maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return false
