@@ -37,8 +37,8 @@ jobs:
       - name: gomod download
         if: steps.gomod_cache_id.outputs.cache-hit != 'true'
         run: |
-          docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
+          docker compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go mod download
           sudo chmod -R 777 ./tmp/cache/gomod
       - name: test
-        run: docker-compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover game-information/lib/domain/...
+        run: docker compose -f ./infra/docker-compose/test/docker-compose.yml run --rm go go test -cover game-information/lib/domain/...
 
