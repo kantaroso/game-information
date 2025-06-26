@@ -13,6 +13,7 @@ func Pv(c *gin.Context) {
 		outjson(c, 200, gin.H{
 			"pv": "-",
 		})
+		return
 	}
 	domainAccesslogInstance := domainAccesslog.GetInstance()
 	domainAccesslogInstance.Register(c.Request)

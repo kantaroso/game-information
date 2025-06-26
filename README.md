@@ -54,9 +54,9 @@ docker login
 
 * go のローカル環境を使用する
 ```shell
-cd infra/docker-compose
-docker-compose run go-prod go run cmd.go makemaster maker
-docker-compose run go-prod go run cmd.go makevideo
+docker-compose -f infra/docker-compose/docker-compose.yml up -d
+docker-compose -f infra/docker-compose/docker-compose.yml exec go-prod go run cmd.go makemaster maker
+docker-compose -f infra/docker-compose/docker-compose.yml exec go-prod go run cmd.go makevideo
 ```
 
 ## 利用サービス

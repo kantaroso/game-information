@@ -14,12 +14,12 @@ services:
 
   go-prod:
     container_name: api-prod
-    image: golang:1.24.3-alpine3.21
+    image: kantaroso/game-information-go-dev:latest
     tty: true
     volumes:
       - ../../app/gin:/go/src/game-information
     ports:
-      - 80:80
+      - 8091:80
     env_file:
       - app.env
       - app.prod.env

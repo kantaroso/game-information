@@ -25,18 +25,18 @@ func TestGetAccessCount(t *testing.T) {
 
 	// 1件以上取れる場合
 	rows = sqlmock.NewRows([]string{"count(id)"}).AddRow(12345)
-	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnRows(rows)
+	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from analysis.access_log")).WillReturnRows(rows)
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 12345, result)
 
 	// 0件の場合
 	rows = sqlmock.NewRows([]string{"count(id)"}).AddRow(0)
-	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnRows(rows)
+	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from analysis.access_log")).WillReturnRows(rows)
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 0, result)
 
 	// エラーになった時
-	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from access_log")).WillReturnError(fmt.Errorf("some error case"))
+	mock.ExpectQuery(regexp.QuoteMeta("select count(id) from analysis.access_log")).WillReturnError(fmt.Errorf("some error case"))
 	result = domainAccesslogInstance.GetAccessCount()
 	assert.Equal(t, 0, result)
 
@@ -56,12 +56,12 @@ func TestRegister(t *testing.T) {
 	var result bool
 
 	// 成功時
-	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(regexp.QuoteMeta("insert into analysis.access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnResult(sqlmock.NewResult(1, 1))
 	result = domainAccesslogInstance.Register(r)
 	assert.Equal(t, true, result)
 
 	// エラー時（特になもしない）
-	mock.ExpectExec(regexp.QuoteMeta("insert into access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error case"))
+	mock.ExpectExec(regexp.QuoteMeta("insert into analysis.access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)")).WithArgs(r.Method, r.URL.Path, r.URL.RawQuery, r.Header.Get("USer-Agent")).WillReturnError(fmt.Errorf("some error case"))
 	result = domainAccesslogInstance.Register(r)
 	assert.Equal(t, false, result)
 

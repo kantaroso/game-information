@@ -33,7 +33,7 @@ func GetInstance() *MakerDetail {
 	return &MakerDetail{DBInstance: instance.DB}
 }
 
-// GetList query [ select * from maker_detail where maker_id = ? ]
+// GetList query [ select * from master.maker_detail where maker_id = ? ]
 func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 
 	var strMakerIDs []string
@@ -72,7 +72,7 @@ func (db *MakerDetail) GetList(makerIDs []int64) *[]Schema {
 	return &details
 }
 
-// Insert [insert into maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values (?,?,?,?,?)]
+// Insert [insert into master.maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values (?,?,?,?,?)]
 func (db *MakerDetail) Insert(schemas *[]Schema) bool {
 	_, err := db.DBInstance.Exec(db.CreateBulkInsertQuery(schemas))
 	if err != nil {
@@ -82,9 +82,9 @@ func (db *MakerDetail) Insert(schemas *[]Schema) bool {
 	return true
 }
 
-// Update [update maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5]
+// Update [update master.maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5]
 func (db *MakerDetail) Update(schema *Schema) bool {
-	_, err := db.DBInstance.Exec("update maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
+	_, err := db.DBInstance.Exec("update master.maker_detail set ohp_url=$1, twitter_name=$2, youtube_channel_id=$3, youtube_keywords=$4, updated_at=NOW() where maker_id=$5", schema.OHP, schema.TwitterName, schema.YoutubeChannelID, schema.YoutubeKeywords, schema.MakerID)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return false
@@ -93,7 +93,7 @@ func (db *MakerDetail) Update(schema *Schema) bool {
 }
 
 func (db *MakerDetail) CreateBulkInsertQuery(schemas *[]Schema) string {
-	baseSQLStr := "insert into maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values %s"
+	baseSQLStr := "insert into master.maker_detail(maker_id, ohp_url, twitter_name, youtube_channel_id, youtube_keywords, created_at, updated_at) values %s"
 	valueSQLStr := "(%d, '%s', '%s', '%s', '%s', NOW(), NOW())"
 	var valueSQLArray []string
 	for _, item := range *schemas {
@@ -103,6 +103,6 @@ func (db *MakerDetail) CreateBulkInsertQuery(schemas *[]Schema) string {
 }
 
 func (db *MakerDetail) CreateSelectQuery(IDs string) string {
-	baseSQLStr := "select * from maker_detail where maker_id IN (%s)"
+	baseSQLStr := "select * from master.maker_detail where maker_id IN (%s)"
 	return fmt.Sprintf(baseSQLStr, IDs)
 }
