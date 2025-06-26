@@ -32,10 +32,10 @@ func GetInstance() *MakerVideo {
 	return &MakerVideo{DBInstance: instance.DB}
 }
 
-// GetList query [ select * from maker_video where maker_id = ? order by id DESC ]
+// GetList query [ select * from master.maker_video where maker_id = $1 order by id DESC ]
 func (db *MakerVideo) GetList(makerID int64) *[]Schema {
 
-	rows, err := db.DBInstance.Query("select * from maker_video where maker_id = ? order by id DESC", makerID)
+	rows, err := db.DBInstance.Query("select * from master.maker_video where maker_id = $1 order by id DESC", makerID)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return &[]Schema{}
@@ -74,7 +74,7 @@ func (db *MakerVideo) BulkInsert(makerID int64, videos *[]domainYoutube.Video) b
 }
 
 func (db *MakerVideo) CreateBulkInsertQuery(makerID int64, videos *[]domainYoutube.Video) string {
-	baseSQLStr := "insert into maker_video (maker_id, video_id, title, published_at, created_at) values %s"
+	baseSQLStr := "insert into master.maker_video (maker_id, video_id, title, published_at, created_at) values %s"
 	valueSQLStr := "(%d, '%s', '%s', '%s', NOW())"
 	var valueSQLArray []string
 	jst, _ := time.LoadLocation("Asia/Tokyo")

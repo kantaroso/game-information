@@ -32,9 +32,6 @@ go run cmd.go makemaster maker
 ## youtubeの動画データを更新する ※引数指定で特定のゲームだけ更新可能
 go run cmd.go makevideo
 go run cmd.go makevideo august
-
-## pagedataのキャッシュを生成する
-go run cmd.go makepage
 ```
 
 ## 初回構築手順

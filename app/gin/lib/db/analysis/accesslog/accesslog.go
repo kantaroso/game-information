@@ -18,10 +18,10 @@ func GetInstance() *Accesslog {
 	return &Accesslog{DBInstance: instance.DB}
 }
 
-// CountAll query [ select count(id) from access_log ]
+// CountAll query [ select count(id) from analysis.access_log ]
 func (db *Accesslog) CountAll() int {
 	var count int
-	rows, err := db.DBInstance.Query("select count(id) from access_log")
+	rows, err := db.DBInstance.Query("select count(id) from analysis.access_log")
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return 0
@@ -45,9 +45,9 @@ func (db *Accesslog) CountAll() int {
 	return count
 }
 
-// Insert query [ insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?) ]
+// Insert query [ insert into analysis.access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4) ]
 func (db *Accesslog) Insert(method string, endpoint string, queryString string, userAgent string) bool {
-	_, err := db.DBInstance.Exec("insert into access_log(method,endpoint,query_string,user_agent) values(?,?,?,?)", method, endpoint, queryString, userAgent)
+	_, err := db.DBInstance.Exec("insert into analysis.access_log(method,endpoint,query_string,user_agent) values($1,$2,$3,$4)", method, endpoint, queryString, userAgent)
 	if err != nil {
 		log.Error(err.Error(), nil)
 		return false

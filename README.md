@@ -50,15 +50,13 @@ docker login
 * [手順](infra/docker-compose/deploy/README.md)
 
 
-## マスターデータ作成
+## マスターデータ作成(本番)
 
 * go のローカル環境を使用する
 ```shell
-# 各種ページ作成
-go run cmd.go makepage
-
-# youtubeからのデータ取得
-go run cmd.go makevideo
+docker-compose -f infra/docker-compose/docker-compose.yml up -d
+docker-compose -f infra/docker-compose/docker-compose.yml exec go-prod go run cmd.go makemaster maker
+docker-compose -f infra/docker-compose/docker-compose.yml exec go-prod go run cmd.go makevideo
 ```
 
 ## 利用サービス

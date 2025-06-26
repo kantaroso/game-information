@@ -9,7 +9,10 @@ import (
 
 // Pv トップページの処理
 func Pv(c *gin.Context) {
-	if renderProduction(c) {
+	if isProduction() {
+		outjson(c, 200, gin.H{
+			"pv": "-",
+		})
 		return
 	}
 	domainAccesslogInstance := domainAccesslog.GetInstance()

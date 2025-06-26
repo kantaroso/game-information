@@ -4,9 +4,6 @@ build-docker-vue-base:
 build-docker-firebase:
 	docker build -f ./infra/docker/firebase/Dockerfile -t kantaroso/game-information-firebase:latest .
 	docker push kantaroso/game-information-firebase:latest
-build-docker-ibmcloud:
-	docker build -f ./infra/docker/ibmcloud/Dockerfile -t kantaroso/game-information-ibmcloud:latest .
-	docker push kantaroso/game-information-ibmcloud:latest
 build-docker-go-dev:
 	$(eval TAGDATE := $(shell date "+%Y%m%d%H%M%S"))
 	docker build -f ./infra/docker/go/gin/dev/Dockerfile -t kantaroso/game-information-go-dev:${TAGDATE} -t kantaroso/game-information-go-dev:latest .

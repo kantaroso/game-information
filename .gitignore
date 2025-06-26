@@ -9,3 +9,4 @@
 /app/vue/front/.env.production
 /game-information.code-workspace
 /infra/docker-compose/app.env
+/infra/docker-compose/app.prod.env

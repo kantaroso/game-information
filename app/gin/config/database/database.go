@@ -23,6 +23,7 @@ type Database struct {
 	Host     string
 	Port     int
 	Name     string
+	Schema   string
 }
 
 // getDatabaseDefault db接続情報の取得 デフォルト
@@ -30,16 +31,17 @@ func newDatabase() *Database {
 	conf := new(Database)
 	conf.User = "root"
 	conf.Password = "password"
-	conf.Host = "mysql"
-	conf.Port = 3306
-	conf.Name = "default"
+	conf.Host = "postgres"
+	conf.Port = 5432
+	conf.Name = "bizyoge"
+	conf.Schema = "public"
 	return conf
 }
 
 // GetMaster masterの接続先
 func GetMaster() *Database {
 	conf := newDatabase()
-	conf.Name = "master"
+	conf.Schema = "master"
 	if len(os.Getenv("DB_USER_MASTER")) > 1 {
 		conf.User = os.Getenv("DB_USER_MASTER")
 	}
@@ -52,13 +54,16 @@ func GetMaster() *Database {
 	if len(os.Getenv("DB_PORT_MASTER")) > 1 {
 		conf.Port, _ = strconv.Atoi(os.Getenv("DB_PORT_MASTER"))
 	}
+	if len(os.Getenv("DB_NAME_MASTER")) > 1 {
+		conf.Name = os.Getenv("DB_NAME_MASTER")
+	}
 	return conf
 }
 
 // GetAnalysis analysisの接続先
 func GetAnalysis() *Database {
 	conf := newDatabase()
-	conf.Name = "analysis"
+	conf.Schema = "analysis"
 	if len(os.Getenv("DB_USER_ANALYSIS")) > 1 {
 		conf.User = os.Getenv("DB_USER_ANALYSIS")
 	}
@@ -70,6 +75,9 @@ func GetAnalysis() *Database {
 	}
 	if len(os.Getenv("DB_PORT_ANALYSIS")) > 1 {
 		conf.Port, _ = strconv.Atoi(os.Getenv("DB_PORT_ANALYSIS"))
+	}
+	if len(os.Getenv("DB_NAME_ANALYSIS")) > 1 {
+		conf.Name = os.Getenv("DB_NAME_ANALYSIS")
 	}
 	return conf
 }
